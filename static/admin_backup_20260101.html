@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Urška – Rezervacije</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand: #7b5e3b;
+      --bg: #f5f4f1;
+      --card: #fff;
+      --muted: #7a7a7a;
+      --border: #e6e2da;
+      --shadow: 0 10px 30px rgba(0,0,0,0.06);
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: #1b1f1a;
+      line-height: 1.6;
+      padding-bottom: 32px;
+    }
+    .page {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 20px;
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 18px;
+    }
+    .title { font-size: 1.3rem; font-weight: 700; display: flex; gap: 10px; align-items: center; }
+    .subtitle { color: var(--muted); font-size: 0.95rem; }
+    .chip { background: #f2ede6; color: #5b4327; padding: 6px 10px; border-radius: 999px; font-weight: 600; }
+    .btn {
+      border: none;
+      cursor: pointer;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-weight: 600;
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      transition: transform 0.05s ease, box-shadow 0.2s ease;
+      background: var(--brand);
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(123,94,59,0.25);
+    }
+    .btn.secondary { background: #f1ede5; color: #4b3a28; box-shadow: none; }
+    .btn:hover { transform: translateY(-1px); }
+
+    /* Stats */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .stat {
+      background: var(--card);
+      padding: 14px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      display: grid;
+      gap: 6px;
+    }
+    .stat .label { color: var(--muted); font-size: 0.9rem; }
+    .stat .value { font-size: 1.8rem; font-weight: 700; color: var(--brand); }
+    .stat .hint { color: var(--muted); font-size: 0.85rem; }
+
+    /* Filters */
+    .filters {
+      background: var(--card);
+      padding: 14px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      display: grid;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .filter-row {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+    select, input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+      font-size: 14px;
+    }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    /* Date grouping */
+    .date-group { margin-bottom: 12px; border: 1px solid #e6e2da; border-radius: 10px; overflow: hidden; background: #fff; box-shadow: var(--shadow); }
+    .date-header { display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: #faf8f4; cursor: pointer; font-weight: 600; }
+    .date-header:hover { background: #f5f2ec; }
+    .date-count { color: #7a7a7a; font-weight: 400; }
+    .date-toggle { margin-left: auto; transition: transform 0.2s; }
+    .date-toggle.collapsed { transform: rotate(-90deg); }
+    .date-reservations { padding: 8px; }
+    .date-reservations.hidden { display: none; }
+    .reservation-row {
+      display: grid;
+      grid-template-columns: 60px 110px 150px 80px 200px 120px 1fr 120px 140px;
+      gap: 8px;
+      align-items: center;
+      padding: 10px 12px;
+      border-bottom: 1px solid #f0ede8;
+    }
+    .reservation-row:last-child { border-bottom: none; }
+    .reservation-row:hover { background: #f9f7f2; }
+    .reservation-row.continuation { background: #faf9f7; border-left: 3px solid #e0dcd5; }
+    .reservation-row.continuation:hover { background: #f5f3f0; }
+    .badge {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .status-pending { background: #fff4d6; color: #8a6500; }
+    .status-confirmed { background: #d7f2dd; color: #226536; }
+    .status-rejected { background: #fbe0e0; color: #9a1f1f; }
+    .status-processing { background: #e3ecff; color: #2f54a3; }
+    .type-room { color: #50351e; }
+    .type-table { color: #134f2b; }
+    .muted { color: var(--muted); font-size: 12px; }
+    .tooltip { max-width: 240px; }
+    .btn-inline {
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 12px;
+      color: #4b3a28;
+    }
+    .btn-inline.danger { color: #b3261e; border-color: #f3c7c2; }
+    .btn-inline.success { color: #1f7a3c; border-color: #b7e3c6; }
+    .res-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+    .month-picker { display:flex; gap:10px; align-items:center; margin: 10px 0; flex-wrap: wrap; }
+    .month-picker select, .month-picker input { width: auto; }
+    .inline-actions { display:flex; gap:8px; flex-wrap:wrap; margin: 10px 0; }
+
+    @media (max-width: 960px) {
+      .reservation-row {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        font-size: 13px;
+      }
+    }
+
+    /* Modal */
+    .modal {
+      position: fixed; inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.35);
+      z-index: 1000;
+      padding: 16px;
+    }
+    .modal.active { display: flex; }
+    .modal-body {
+      background: #fff;
+      border-radius: 16px;
+      max-width: 720px;
+      width: 100%;
+      max-height: 90vh;
+      overflow: auto;
+      padding: 20px;
+      box-shadow: var(--shadow);
+      display: grid;
+      gap: 12px;
+    }
+    .modal-title { font-size: 1.2rem; font-weight: 700; }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+    .form-group { display: grid; gap: 6px; }
+    label { font-weight: 600; font-size: 13px; color: #3b2d1e; }
+    textarea { min-height: 90px; }
+    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 8px; }
+
+    .tabs { display: flex; gap: 8px; margin-bottom: 12px; }
+    .tab {
+      border: 1px solid var(--border);
+      background: #fff;
+      color: #4b3a28;
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: var(--shadow);
+    }
+    .tab.active { background: var(--brand); color: #fff; }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+
+    .toast-container {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      display: grid;
+      gap: 8px;
+      z-index: 2000;
+      max-width: 320px;
+    }
+    .toast {
+      padding: 12px 14px;
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      color: #1b1f1a;
+      background: #fff;
+      border-left: 4px solid var(--brand);
+      animation: fade-in 0.2s ease;
+      font-weight: 600;
+    }
+    .toast.success { border-color: #2f8f5b; }
+    .toast.error { border-color: #c0392b; }
+    .toast.warning { border-color: #c48c1c; }
+    @keyframes fade-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+
+    @media (max-width: 960px) {
+      table { min-width: 0; }
+      th, td { font-size: 13px; }
+      .table-wrap { overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div>
+        <div class="title">🏠 Urška - Rezervacije</div>
+        <div class="subtitle" id="current-date"></div>
+      </div>
+      <div class="actions">
+        <button class="btn secondary" onclick="exportCsv()">📥 Izvozi CSV</button>
+        <button class="btn" onclick="loadAll()">🔄 Osveži podatke</button>
+      </div>
+    </header>
+
+    <div class="tabs">
+      <button class="tab active" id="tab-room" onclick="setTab('room')">🛏️ Sobe</button>
+      <button class="tab" id="tab-table" onclick="setTab('table')">🍽️ Mize</button>
+    </div>
+
+    <div class="stats" id="stats-cards">
+      <div class="stat"><div class="label">Danes</div><div class="value" id="stat-danes">0</div><div class="hint">Rezervacije</div></div>
+      <div class="stat"><div class="label">Ta teden</div><div class="value" id="stat-teden">0</div><div class="hint">Rezervacije</div></div>
+      <div class="stat"><div class="label">Ta mesec</div><div class="value" id="stat-mesec">0</div><div class="hint">Rezervacije</div></div>
+      <div class="stat"><div class="label">Potrjenih</div><div class="value" id="stat-confirmed">0</div></div>
+      <div class="stat"><div class="label">Čaka</div><div class="value" id="stat-pending">0</div></div>
+      <div class="stat"><div class="label">🛏️ Sobe</div><div class="value" id="stat-room">0</div></div>
+      <div class="stat"><div class="label">🍽️ Mize</div><div class="value" id="stat-table">0</div></div>
+    </div>
+
+    <div class="filters">
+      <div class="filter-row">
+        <select id="filter-status">
+          <option value="">Vsi statusi</option>
+          <option value="pending">Čaka</option>
+          <option value="processing">V obdelavi</option>
+          <option value="confirmed">Potrjeno</option>
+          <option value="rejected">Zavrnjeno</option>
+        </select>
+        <select id="filter-type">
+          <option value="">Vsi tipi</option>
+          <option value="room">Sobe</option>
+          <option value="table">Mize</option>
+        </select>
+        <select id="filter-source">
+          <option value="">Vsi viri</option>
+          <option value="chat">Chatbot</option>
+          <option value="wordpress_room">WP Sobe</option>
+          <option value="wordpress_table">WP Mize</option>
+        </select>
+        <input type="date" id="filter-date-from" />
+        <input type="date" id="filter-date-to" />
+      </div>
+      <div class="actions">
+        <button class="btn" onclick="loadAll()">Filtriraj</button>
+        <button class="btn secondary" onclick="resetFilters()">Ponastavi</button>
+        <div class="inline-actions" style="gap:6px;">
+          <span style="color:#7a7a7a;">Hitra obdobja:</span>
+          <button class="btn secondary" type="button" onclick="setRangeDays(14)">14 dni</button>
+          <button class="btn secondary" type="button" onclick="setRangeDays(30)">30 dni</button>
+          <button class="btn secondary" type="button" onclick="setRangeDays(90)">90 dni</button>
+        </div>
+        <label style="display:inline-flex; align-items:center; gap:6px; color:#7a7a7a;">
+          <input type="checkbox" id="auto-refresh-toggle" onclick="toggleAutoRefresh(this.checked)" />
+          Auto osveži (30s)
+        </label>
+      </div>
+  </div>
+
+  <div class="month-picker">
+    <label for="month-select">Mesec:</label>
+    <select id="month-select" onchange="selectMonth(this.value)">
+      <option value="0">Januar</option>
+      <option value="1">Februar</option>
+      <option value="2">Marec</option>
+      <option value="3">April</option>
+      <option value="4">Maj</option>
+      <option value="5">Junij</option>
+      <option value="6">Julij</option>
+      <option value="7">Avgust</option>
+      <option value="8">September</option>
+      <option value="9">Oktober</option>
+      <option value="10">November</option>
+      <option value="11">December</option>
+    </select>
+    <label for="year-input">Leto:</label>
+    <input id="year-input" type="number" style="width:100px;" value="">
+    <button class="btn secondary" onclick="applyMonthYear()">Nastavi</button>
+  </div>
+
+  <div id="room-calendar-block" class="card" style="margin-top: 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+      <button class="btn secondary" onclick="changeMonth(-1)">◀ Prejšnji</button>
+      <h3 id="calendar-title" style="margin: 0;">Koledar (sobe)</h3>
+      <button class="btn secondary" onclick="changeMonth(1)">Naslednji ▶</button>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; margin-bottom: 8px;">
+      <div style="font-weight: 600; color: #7a7a7a;">PON</div>
+      <div style="font-weight: 600; color: #7a7a7a;">TOR</div>
+      <div style="font-weight: 600; color: #7a7a7a;">SRE</div>
+      <div style="font-weight: 600; color: #7a7a7a;">ČET</div>
+      <div style="font-weight: 600; color: #7a7a7a;">PET</div>
+      <div style="font-weight: 600; color: #7a7a7a;">SOB</div>
+      <div style="font-weight: 600; color: #7a7a7a;">NED</div>
+    </div>
+
+    <div id="calendar-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px;">
+    </div>
+
+    <div style="margin-top: 12px; display: flex; gap: 16px; flex-wrap: wrap;">
+      <span style="font-weight:600;">Legenda:</span>
+      <span style="color:#27ae60;">Potrjeno</span>
+      <span style="color:#c27d00;">Čaka</span>
+      <span style="color:#e74c3c;">Današnji dan = rdeča obroba</span>
+      <span style="color:#7a7a7a;">Prikazani so vsi zasedeni dnevi bivanja (check-in do noči pred odhodom). Klik na dan pokaže podrobnosti.</span>
+    </div>
+  </div>
+
+  <div id="table-calendar-block" class="card" style="margin-top: 12px; display: none;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+      <button class="btn secondary" onclick="changeMonth(-1)">◀ Prejšnji</button>
+      <h3 id="table-calendar-title" style="margin: 0;">Koledar (mize)</h3>
+      <button class="btn secondary" onclick="changeMonth(1)">Naslednji ▶</button>
+    </div>
+    <div id="table-calendar-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px;"></div>
+    <div style="margin-top: 12px; display: flex; gap: 12px; flex-wrap: wrap; font-size: 13px;">
+      <span>💚 <50% kapacitete</span>
+      <span>💛 50-80%</span>
+      <span>❤️ >80%</span>
+    </div>
+  </div>
+
+  <div class="inline-actions">
+    <button class="btn" onclick="openNewRoom()">+ Nova rezervacija sobe</button>
+    <button class="btn secondary" onclick="openNewTable()">+ Nova rezervacija mize</button>
+  </div>
+
+  <div id="reservations-container"></div>
+
+  <div id="day-sidebar" class="card" style="margin-top: 12px; display: none;">
+    <h4 id="sidebar-date">Izberi dan</h4>
+    <div id="sidebar-content"></div>
+  </div>
+
+  <div id="table-sidebar" class="card" style="margin-top: 12px; display: none;">
+    <h4 id="table-sidebar-date">Izberi dan</h4>
+    <div id="table-sidebar-content"></div>
+  </div>
+
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Modal soba -->
+  <div class="modal" id="edit-room-modal">
+    <div class="modal-body">
+      <div class="modal-title">🛏️ Uredi rezervacijo sobe #<span id="room-edit-id"></span></div>
+      <form id="room-edit-form">
+        <input type="hidden" id="room-edit-hidden-id">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Status</label>
+            <select id="room-edit-status">
+              <option value="pending">Čaka</option>
+              <option value="processing">V obdelavi</option>
+              <option value="confirmed">Potrjeno</option>
+              <option value="rejected">Zavrnjeno</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Datum prihoda</label>
+            <input type="date" id="room-edit-date" required>
+          </div>
+          <div class="form-group">
+            <label>Število nočitev</label>
+            <input type="number" id="room-edit-nights" min="1" required>
+          </div>
+          <div class="form-group">
+            <label>Soba</label>
+            <select id="room-edit-location">
+              <option value="">Nedoločeno (dodeli ob potrditvi)</option>
+              <option value="ALJAZ">ALJAŽ</option>
+              <option value="JULIJA">JULIJA</option>
+              <option value="ANA">ANA</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Število oseb</label>
+            <input type="number" id="room-edit-people" min="1" required>
+          </div>
+          <div class="form-group">
+            <label>Število otrok</label>
+            <input type="number" id="room-edit-kids" min="0">
+          </div>
+          <div class="form-group">
+            <label>Starost otrok</label>
+            <input type="text" id="room-edit-kids-ages" placeholder="npr. 8 in 6 let">
+          </div>
+          <div class="form-group">
+            <label>Ime in priimek</label>
+            <input type="text" id="room-edit-name" required>
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="room-edit-email" required>
+          </div>
+          <div class="form-group">
+            <label>Telefon</label>
+            <input type="tel" id="room-edit-phone">
+          </div>
+        </div>
+        <div class="form-group" style="margin-top: 12px;">
+          <label>Opombe gosta</label>
+          <textarea id="room-edit-note" rows="2"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Admin opombe (interno)</label>
+          <textarea id="room-edit-admin-notes" rows="2"></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn secondary" onclick="closeRoomEditModal()">Prekliči</button>
+          <button type="submit" class="btn">💾 Shrani</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal miza -->
+  <div class="modal" id="edit-table-modal">
+    <div class="modal-body">
+      <div class="modal-title">🍽️ Uredi rezervacijo mize #<span id="table-edit-id"></span></div>
+      <form id="table-edit-form">
+        <input type="hidden" id="table-edit-hidden-id">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Status</label>
+            <select id="table-edit-status">
+              <option value="pending">Čaka</option>
+              <option value="processing">V obdelavi</option>
+              <option value="confirmed">Potrjeno</option>
+              <option value="rejected">Zavrnjeno</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Datum</label>
+            <input type="date" id="table-edit-date" required>
+          </div>
+          <div class="form-group">
+            <label>Čas prihoda</label>
+            <input type="time" id="table-edit-time" required>
+          </div>
+          <div class="form-group">
+            <label>Jedilnica</label>
+            <select id="table-edit-location">
+              <option value="Pri peči">Pri peči (kapaciteta 15 oseb)</option>
+              <option value="Pri vrtu">Pri vrtu (kapaciteta 35 oseb)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Število oseb</label>
+            <input type="number" id="table-edit-people" min="1" required>
+          </div>
+          <div class="form-group">
+            <label>Število otrok</label>
+            <input type="number" id="table-edit-kids" min="0">
+          </div>
+          <div class="form-group">
+            <label>Starost otrok</label>
+            <input type="text" id="table-edit-kids-ages" placeholder="npr. 5 in 3 let">
+          </div>
+          <div class="form-group">
+            <label>Tip dogodka</label>
+            <select id="table-edit-event-type">
+              <option value="">-</option>
+              <option value="Kosilo">Kosilo</option>
+              <option value="Večerja">Večerja</option>
+              <option value="Praznovanje">Praznovanje</option>
+              <option value="Poslovno">Poslovno kosilo/večerja</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Ime in priimek</label>
+            <input type="text" id="table-edit-name" required>
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="table-edit-email" required>
+          </div>
+          <div class="form-group">
+            <label>Telefon</label>
+            <input type="tel" id="table-edit-phone">
+          </div>
+        </div>
+        <div class="form-group" style="margin-top: 12px;">
+          <label>Posebne potrebe (alergije, visoki stolčki...)</label>
+          <textarea id="table-edit-special-needs" rows="2"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Admin opombe (interno)</label>
+          <textarea id="table-edit-admin-notes" rows="2"></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn secondary" onclick="closeTableEditModal()">Prekliči</button>
+          <button type="submit" class="btn">💾 Shrani</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal" id="confirm-modal">
+    <div class="modal-body">
+      <div class="modal-title" id="confirm-title">Potrdi rezervacijo</div>
+      <form id="confirm-form">
+        <input type="hidden" id="confirm-id" />
+        <input type="hidden" id="confirm-type" />
+        <div class="form-group">
+          <label id="confirm-label">Izberi sobo</label>
+          <div id="confirm-hint" style="color:#7a7a7a; font-size:13px; margin-bottom:4px;"></div>
+          <select id="confirm-choice"></select>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn secondary" onclick="closeConfirmModal()">Prekliči</button>
+          <button type="submit" class="btn">Potrdi in pošlji email</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Nova soba -->
+  <div class="modal" id="new-room-modal">
+    <div class="modal-body">
+      <div class="modal-title">+ Nova rezervacija sobe</div>
+      <form id="new-room-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Datum prihoda</label>
+            <input type="date" id="new-room-date" required>
+          </div>
+          <div class="form-group">
+            <label>Nočitve</label>
+            <input type="number" id="new-room-nights" min="1" required>
+          </div>
+          <div class="form-group">
+            <label>Soba</label>
+            <select id="new-room-location">
+              <option value="">Nedoločeno</option>
+              <option value="ALJAZ">ALJAŽ</option>
+              <option value="JULIJA">JULIJA</option>
+              <option value="ANA">ANA</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Osebe</label>
+            <input type="number" id="new-room-people" min="1" required>
+          </div>
+          <div class="form-group">
+            <label>Otroci</label>
+            <input type="number" id="new-room-kids" min="0">
+          </div>
+          <div class="form-group">
+            <label>Starost otrok</label>
+            <input type="text" id="new-room-kids-ages">
+          </div>
+          <div class="form-group">
+            <label>Ime in priimek</label>
+            <input type="text" id="new-room-name" required>
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="new-room-email" required>
+          </div>
+          <div class="form-group">
+            <label>Telefon</label>
+            <input type="tel" id="new-room-phone">
+          </div>
+        </div>
+        <div class="form-group" style="margin-top:12px;">
+          <label>Opombe</label>
+          <textarea id="new-room-note"></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn secondary" onclick="closeNewRoom()">Prekliči</button>
+          <button type="submit" class="btn">💾 Shrani</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Nova miza -->
+  <div class="modal" id="new-table-modal">
+    <div class="modal-body">
+      <div class="modal-title">+ Nova rezervacija mize</div>
+      <form id="new-table-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Datum</label>
+            <input type="date" id="new-table-date" required>
+          </div>
+          <div class="form-group">
+            <label>Čas</label>
+            <input type="time" id="new-table-time" required>
+          </div>
+          <div class="form-group">
+            <label>Jedilnica</label>
+            <select id="new-table-location">
+              <option value="Pri peči">Pri peči (15 oseb)</option>
+              <option value="Pri vrtu">Pri vrtu (35 oseb)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Osebe</label>
+            <input type="number" id="new-table-people" min="1" required>
+          </div>
+          <div class="form-group">
+            <label>Otroci</label>
+            <input type="number" id="new-table-kids" min="0">
+          </div>
+          <div class="form-group">
+            <label>Starost otrok</label>
+            <input type="text" id="new-table-kids-ages">
+          </div>
+          <div class="form-group">
+            <label>Tip dogodka</label>
+            <select id="new-table-event-type">
+              <option value="">-</option>
+              <option value="Kosilo">Kosilo</option>
+              <option value="Večerja">Večerja</option>
+              <option value="Praznovanje">Praznovanje</option>
+              <option value="Poslovno">Poslovno kosilo/večerja</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Ime in priimek</label>
+            <input type="text" id="new-table-name" required>
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="new-table-email" required>
+          </div>
+          <div class="form-group">
+            <label>Telefon</label>
+            <input type="tel" id="new-table-phone">
+          </div>
+        </div>
+        <div class="form-group" style="margin-top:12px;">
+          <label>Posebne potrebe</label>
+          <textarea id="new-table-special-needs"></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn secondary" onclick="closeNewTable()">Prekliči</button>
+          <button type="submit" class="btn">💾 Shrani</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = '/api/admin';
+    let currentTab = 'room';
+    let calendarYear = new Date().getFullYear();
+    let calendarMonth = new Date().getMonth(); // 0-indexed
+    const TABLE_CAP = { 'Pri peči': 15, 'Pri vrtu': 35 };
+
+    function todayISO() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    }
+
+    const qs = id => document.getElementById(id);
+    document.getElementById('current-date').textContent = new Date().toLocaleDateString('sl-SI', { weekday:'short', day:'2-digit', month:'2-digit', year:'numeric' });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      setTab('room', true);
+      setInterval(loadStats, 60000);
+      qs('month-select').value = calendarMonth.toString();
+      qs('year-input').value = calendarYear.toString();
+      loadAll(); // auto load ob prvem prikazu
+    });
+
+    function setTab(tab, silent = false) {
+      currentTab = tab;
+      qs('tab-room').classList.toggle('active', tab === 'room');
+      qs('tab-table').classList.toggle('active', tab === 'table');
+      qs('filter-type').value = tab;
+      qs('room-calendar-block').style.display = tab === 'room' ? '' : 'none';
+      qs('day-sidebar').style.display = tab === 'room' ? 'block' : 'none';
+      qs('table-calendar-block').style.display = tab === 'table' ? '' : 'none';
+      qs('table-sidebar').style.display = tab === 'table' ? 'block' : 'none';
+      if (!silent) {
+        loadAll();
+      }
+    }
+
+    function toast(message, type = 'info', duration = 4000) {
+      const container = qs('toast-container');
+      if (!container) return;
+      const el = document.createElement('div');
+      el.className = `toast ${type}`;
+      el.textContent = message;
+      container.appendChild(el);
+      setTimeout(() => {
+        el.style.opacity = '0';
+        setTimeout(() => el.remove(), 200);
+      }, duration);
+    }
+
+    async function loadAll() {
+      const tasks = [loadStats(), loadReservations()];
+      if (currentTab === 'room') {
+        tasks.push(renderCalendar());
+      } else {
+        tasks.push(renderTableCalendar());
+      }
+      await Promise.all(tasks);
+    }
+
+    function resetFilters() {
+      qs('filter-status').value = '';
+      qs('filter-type').value = currentTab;
+      qs('filter-source').value = '';
+      qs('filter-date-from').value = '';
+      qs('filter-date-to').value = '';
+      loadAll();
+    }
+
+    function setRangeDays(days) {
+      const start = todayISO();
+      const endDate = new Date();
+      endDate.setDate(endDate.getDate() + days);
+      const end = `${endDate.getFullYear()}-${String(endDate.getMonth()+1).padStart(2,'0')}-${String(endDate.getDate()).padStart(2,'0')}`;
+      qs('filter-date-from').value = start;
+      qs('filter-date-to').value = end;
+      loadAll();
+    }
+
+    function buildQuery() {
+      const status = qs('filter-status').value;
+      const type = qs('filter-type').value || currentTab;
+      const source = qs('filter-source').value;
+      const date_from = qs('filter-date-from').value.replace(/\s+/g, '');
+      const date_to = qs('filter-date-to').value.replace(/\s+/g, '');
+      const params = new URLSearchParams();
+      params.set('limit', '200');
+      if (status) params.set('status', status);
+      if (type) params.set('type', type);
+      if (source) params.set('source', source);
+      if (date_from) params.set('date_from', date_from);
+      if (date_to) params.set('date_to', date_to);
+      return params.toString();
+    }
+
+    async function loadStats() {
+      try {
+        const res = await fetch(`${API_BASE}/stats`);
+        const data = await res.json();
+        qs('stat-danes').textContent = data.danes ?? 0;
+        qs('stat-teden').textContent = data.ta_teden ?? 0;
+        qs('stat-mesec').textContent = data.ta_mesec ?? 0;
+        qs('stat-confirmed').textContent = data.po_statusu?.confirmed ?? 0;
+        qs('stat-pending').textContent = data.po_statusu?.pending ?? 0;
+        qs('stat-room').textContent = data.po_tipu?.room ?? 0;
+        qs('stat-table').textContent = data.po_tipu?.table ?? 0;
+      } catch (e) {
+        console.error('Stats error', e);
+      }
+    }
+
+    let lastReservations = [];
+
+    async function loadReservations() {
+      const query = buildQuery();
+      try {
+        const res = await fetch(`${API_BASE}/reservations?${query}`);
+        const data = await res.json();
+        lastReservations = data.reservations || [];
+        // če imamo rezervacije, prestavimo koledar na mesec prve rezervacije
+        if (lastReservations.length) {
+          const first = lastReservations[0];
+          const d = parseDDMMYYYY(first.date);
+          if (d) {
+            calendarYear = d.getFullYear();
+            calendarMonth = d.getMonth();
+            qs('month-select').value = calendarMonth.toString();
+            qs('year-input').value = calendarYear.toString();
+            if (currentTab === 'room') {
+              renderCalendar();
+            } else {
+              renderTableCalendar();
+            }
+          }
+        }
+        renderReservations(lastReservations);
+      } catch (e) {
+        console.error('Load reservations error', e);
+      }
+    }
+
+    let autoRefreshTimer = null;
+    function toggleAutoRefresh(enabled) {
+      if (autoRefreshTimer) {
+        clearInterval(autoRefreshTimer);
+        autoRefreshTimer = null;
+      }
+      if (enabled) {
+        autoRefreshTimer = setInterval(loadAll, 30000);
+      }
+    }
+
+    function renderReservations(list) {
+      const container = qs('reservations-container');
+      if (!container) return;
+      const monthNames = ['Januar', 'Februar', 'Marec', 'April', 'Maj', 'Junij', 'Julij', 'Avgust', 'September', 'Oktober', 'November', 'December'];
+      const title = `${monthNames[calendarMonth]} ${calendarYear}`;
+
+      const expanded = expandReservations(list);
+      const pendingList = expanded.filter(r => r.isMainDay && (r.status === 'pending' || r.status === 'processing'));
+
+      // filtriraj po izbranem datumu (če sta vnesena), sicer po prikazanem mesecu
+      const dfVal = qs('filter-date-from').value;
+      const dtVal = qs('filter-date-to').value;
+      const dateFrom = dfVal ? new Date(dfVal) : null;
+      const dateTo = dtVal ? new Date(dtVal) : null;
+
+      const filtered = expanded.filter(r => {
+        const d = parseDDMMYYYY(r.date);
+        if (!d) return false;
+        if (dateFrom && d < dateFrom) return false;
+        if (dateTo && d > dateTo) return false;
+        // če ni range filtrov, filtriramo na trenutno izbran mesec/let
+        if (!dateFrom && !dateTo) {
+          return d.getMonth() === calendarMonth && d.getFullYear() === calendarYear;
+        }
+        return true;
+      });
+
+      const byDate = {};
+      filtered.forEach(r => {
+        const date = r.date || 'Brez datuma';
+        if (!byDate[date]) byDate[date] = [];
+        byDate[date].push(r);
+      });
+
+      const daysInMonth = new Date(calendarYear, calendarMonth + 1, 0).getDate();
+      let html = '';
+
+      // pending blok
+      html += `<div class="date-group" style="border-color:#f3c7c2;">
+        <div class="date-header" onclick="toggleGroup('pending-block')">
+          <span>⚠️</span>
+          <span>Čakajoče / v obdelavi</span>
+          <span class="date-count">(${pendingList.length})</span>
+          <span class="date-toggle" id="toggle-pending-block">▼</span>
+        </div>
+        <div class="date-reservations" id="group-pending-block">
+          ${pendingList.length ? pendingList.map(r => renderReservationRow(r, true)).join('') : '<div style="padding:8px 4px;color:#7a7a7a;">Ni čakajočih.</div>'}
+        </div>
+      </div>`;
+
+      html += `<h3 style="margin:12px 0 8px;">${title}</h3>`;
+
+      const datesWithReservations = Object.keys(byDate).sort((a, b) => {
+        const da = parseDDMMYYYY(a);
+        const db = parseDDMMYYYY(b);
+        if (!da || !db) return a.localeCompare(b);
+        return da - db;
+      });
+
+      datesWithReservations.forEach(dateStr => {
+        const dateKey = dateStr.replace(/\./g, '-');
+        const items = byDate[dateStr] || [];
+        const isNear = isDateWithin14Days(dateStr);
+        const sortedItems = [...items].sort((a,b) => (b.isMainDay === true ? 1 : 0) - (a.isMainDay === true ? 1 : 0));
+        html += `
+          <div class="date-group">
+            <div class="date-header" onclick="toggleGroup('${dateKey}')">
+              <span>📅</span>
+              <span>${dateStr}</span>
+              <span class="date-count">(${items.length} rezervacij${items.length === 1 ? 'a' : ''})</span>
+              <span class="date-toggle ${isNear ? '' : 'collapsed'}" id="toggle-${dateKey}">${isNear ? '▼' : '▶'}</span>
+            </div>
+            <div class="date-reservations ${isNear ? '' : 'hidden'}" id="group-${dateKey}">
+              ${sortedItems.length ? sortedItems.map(r => renderReservationRow(r, false)).join('') : '<div style="padding:8px 4px;color:#7a7a7a;">Ni rezervacij.</div>'}
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function renderStatus(status) {
+      const cls = status ? `status-${status}` : '';
+      const label = status === 'pending' ? 'Čaka' :
+                    status === 'confirmed' ? 'Potrjeno' :
+                    status === 'rejected' ? 'Zavrnjeno' :
+                    status === 'processing' ? 'V obdelavi' : status || '-';
+      return `<span class="badge ${cls}">${label}</span>`;
+    }
+    function renderStatusText(status) {
+      if (status === 'pending') return 'Čaka';
+      if (status === 'confirmed') return 'Potrjeno';
+      if (status === 'rejected') return 'Zavrnjeno';
+      if (status === 'processing') return 'V obdelavi';
+      return status || '-';
+    }
+
+    function parseDDMMYYYY(val) {
+      if (!val) return null;
+      const parts = String(val).split('.');
+      if (parts.length === 3) {
+        const [d, m, y] = parts.map(Number);
+        if (!isNaN(d) && !isNaN(m) && !isNaN(y)) {
+          return new Date(y, m - 1, d);
+        }
+      }
+      const asDate = new Date(val);
+      return isNaN(asDate.getTime()) ? null : asDate;
+    }
+
+    function toggleGroup(dateKey) {
+      const content = qs(`group-${dateKey}`);
+      const toggle = qs(`toggle-${dateKey}`);
+      if (!content || !toggle) return;
+      const isHidden = content.classList.contains('hidden');
+      content.classList.toggle('hidden', !isHidden);
+      toggle.textContent = isHidden ? '▼' : '▶';
+      toggle.classList.toggle('collapsed', !isHidden);
+    }
+
+    function expandReservations(list) {
+      const expanded = [];
+      list.forEach(r => {
+        const start = parseDDMMYYYY(r.date);
+        if (!start) return;
+        if (r.reservation_type === 'room' && r.nights && r.nights > 1) {
+          const total = parseInt(r.nights, 10) || 1;
+          for (let i = 0; i < total; i++) {
+            const d = new Date(start);
+            d.setDate(d.getDate() + i);
+            const dateStr = formatDate(d);
+            expanded.push({
+              ...r,
+              date: dateStr,
+              isMainDay: i === 0,
+              dayNumber: i + 1,
+              totalDays: total,
+              mainDate: formatDate(start),
+              endDate: formatDate(new Date(start.getFullYear(), start.getMonth(), start.getDate() + total - 1)),
+            });
+          }
+        } else {
+          expanded.push({
+            ...r,
+            isMainDay: true,
+            dayNumber: 1,
+            totalDays: r.nights || 1,
+            mainDate: formatDate(start),
+            endDate: r.date,
+          });
+        }
+      });
+      return expanded;
+    }
+
+    function isDateWithin14Days(dateStr) {
+      const parts = dateStr.split('.');
+      if (parts.length !== 3) return false;
+      const d = new Date(parts[2], parts[1] - 1, parts[0]);
+      const now = new Date();
+      const diff = (d - now) / (1000 * 60 * 60 * 24);
+      return diff >= -1 && diff <= 14;
+    }
+
+    function formatDate(d) {
+      const day = String(d.getDate()).padStart(2, '0');
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const year = d.getFullYear();
+      return `${day}.${month}.${year}`;
+    }
+
+    function renderReservationRow(r, showDate = false) {
+      const kidsInfo = r.kids ? ` (${r.kids} otrok${r.kids_small ? ': ' + r.kids_small : ''})` : '';
+      const roomDisplay = r.reservation_type === 'table'
+        ? `${r.location || '-'} ${r.time ? 'ob ' + r.time : ''}`
+        : (r.location && !String(r.location).toLowerCase().includes('dodelimo') ? r.location : '-');
+      const nightsDisplay = r.reservation_type === 'table' ? '-' : (r.nights || '-');
+      const guestName = r.name || 'Gost';
+      const peopleLabel = `${r.people || '-'} oseb${kidsInfo}`;
+      const dateLabel = showDate ? (r.date || '-') : '';
+      if (r.isMainDay) {
+        return `
+          <div class="reservation-row">
+            <span class="res-id">#${r.id}</span>
+            <span class="res-date">${dateLabel}</span>
+            <span class="res-guest">${guestName}</span>
+            <span class="res-nights">${r.reservation_type === 'table' ? '-' : `${r.nights || 1} noči${r.totalDays ? ` (${r.date} - ${r.endDate || ''})` : ''}`}</span>
+            <span class="res-people">${peopleLabel}</span>
+            <span class="res-room">${roomDisplay || '-'}</span>
+            <span class="res-note">${r.note ? (r.note.length > 35 ? r.note.slice(0,35)+'…' : r.note) : '-'}</span>
+            <span>${renderStatus(r.status)}</span>
+            <span class="res-actions">
+              <button class="btn-inline success" onclick="openConfirm('${encodeURIComponent(JSON.stringify(r))}')">✅</button>
+              <button class="btn-inline danger" onclick="rejectReservation(${r.id})">❌</button>
+              <button class="btn-inline" onclick="openEdit('${encodeURIComponent(JSON.stringify(r))}')">✏️</button>
+            </span>
+          </div>
+        `;
+      }
+      const continuationLabel = r.totalDays ? `↳ ${guestName} (noč ${r.dayNumber}/${r.totalDays})` : `↳ ${guestName}`;
+      return `
+        <div class="reservation-row continuation">
+          <span class="res-id" style="opacity:0.4">#${r.id}</span>
+          <span class="res-date">${dateLabel}</span>
+          <span class="res-guest" style="opacity:0.6">${continuationLabel}</span>
+          <span class="res-nights"></span>
+          <span class="res-people"></span>
+          <span class="res-room" style="opacity:0.6">${roomDisplay || '-'}</span>
+          <span class="res-note"></span>
+          <span class="badge status-${r.status}" style="opacity:0.5">${renderStatusText(r.status)}</span>
+          <span class="res-actions">
+            <span style="color:#999; font-size:11px; cursor:pointer;" onclick="scrollToDate('${r.mainDate || r.date}')">→ glej ${r.mainDate || r.date}</span>
+          </span>
+        </div>
+      `;
+    }
+
+    function openConfirm(dataStr) {
+      const r = JSON.parse(decodeURIComponent(dataStr));
+      qs('confirm-id').value = r.id;
+      qs('confirm-type').value = r.reservation_type || 'room';
+      qs('confirm-title').textContent = `Potrdi rezervacijo #${r.id} (${r.name || 'gost'})`;
+      const select = qs('confirm-choice');
+      const hint = qs('confirm-hint');
+      select.innerHTML = '';
+      if (r.reservation_type === 'table') {
+        qs('confirm-label').textContent = 'Izberi jedilnico';
+        hint.textContent = r.location ? `Gost je izbral: ${r.location}` : 'Gost ni izbral jedilnice.';
+        ['Pri peči', 'Pri vrtu'].forEach(opt => {
+          const o = document.createElement('option');
+          o.value = opt;
+          o.textContent = opt;
+          select.appendChild(o);
+        });
+        if (r.location) select.value = r.location;
+      } else {
+        qs('confirm-label').textContent = 'Izberi sobo';
+        hint.textContent = r.location ? `Gost je izbral: ${(r.location || '').toUpperCase()}` : 'Gost ni izbral sobe.';
+        ['', 'ALJAZ', 'JULIJA', 'ANA'].forEach(opt => {
+          const o = document.createElement('option');
+          o.value = opt;
+          o.textContent = opt ? opt : '-- izberi --';
+          select.appendChild(o);
+        });
+        const currentRoom = (r.location || '').toUpperCase();
+        select.value = currentRoom && ['ALJAZ','JULIJA','ANA'].includes(currentRoom) ? currentRoom : '';
+      }
+      qs('confirm-modal').classList.add('active');
+    }
+    function closeConfirmModal() { qs('confirm-modal').classList.remove('active'); }
+
+    function clearNewRoomForm() {
+      const ids = [
+        'new-room-date',
+        'new-room-nights',
+        'new-room-people',
+        'new-room-kids',
+        'new-room-kids-ages',
+        'new-room-location',
+        'new-room-name',
+        'new-room-email',
+        'new-room-phone',
+        'new-room-note',
+      ];
+      ids.forEach(id => {
+        const el = qs(id);
+        if (el) el.value = '';
+      });
+    }
+
+    function clearNewTableForm() {
+      qs('new-table-date').value = '';
+      qs('new-table-time').value = '';
+      qs('new-table-location').value = 'Pri peči';
+      qs('new-table-people').value = '';
+      qs('new-table-kids').value = '';
+      qs('new-table-kids-ages').value = '';
+      qs('new-table-event-type').value = '';
+      qs('new-table-name').value = '';
+      qs('new-table-email').value = '';
+      qs('new-table-phone').value = '';
+      qs('new-table-special-needs').value = '';
+    }
+
+    function openNewRoom() {
+      clearNewRoomForm();
+      qs('new-room-modal').classList.add('active');
+    }
+    function closeNewRoom() { qs('new-room-modal').classList.remove('active'); }
+    function openNewTable() {
+      clearNewTableForm();
+      qs('new-table-modal').classList.add('active');
+    }
+    function closeNewTable() { qs('new-table-modal').classList.remove('active'); }
+
+    function formatToDDMMYYYY(dateStr) {
+      if (!dateStr) return '';
+      const parts = String(dateStr).split('-');
+      if (parts.length === 3) {
+        return `${parts[2].padStart(2,'0')}.${parts[1].padStart(2,'0')}.${parts[0]}`;
+      }
+      return dateStr;
+    }
+
+    async function confirmReservation(id, payload) {
+      const res = await fetch(`${API_BASE}/reservations/${id}/confirm`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload || {}),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        toast(data.detail || 'Napaka pri potrditvi.', 'error');
+        return;
+      }
+      if (data.warning) {
+        toast(data.warning, 'warning');
+        return;
+      }
+      toast('Rezervacija potrjena.', 'success');
+      closeConfirmModal();
+      loadAll();
+    }
+
+    qs('confirm-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = qs('confirm-id').value;
+      const type = qs('confirm-type').value;
+      const choice = qs('confirm-choice').value;
+      if (!choice) {
+        toast('Izberi možnost pred potrditvijo.', 'warning');
+        return;
+      }
+      if (type === 'table') {
+        confirmReservation(id, { location: choice });
+      } else {
+        confirmReservation(id, { room: choice });
+      }
+    });
+
+    async function renderCalendar() {
+      const title = qs('calendar-title');
+      const grid = qs('calendar-grid');
+      if (!title || !grid) return;
+      const monthNames = ['Januar', 'Februar', 'Marec', 'April', 'Maj', 'Junij', 'Julij', 'Avgust', 'September', 'Oktober', 'November', 'December'];
+      title.textContent = `${monthNames[calendarMonth]} ${calendarYear}`;
+
+      let calendarData = {};
+      try {
+        const res = await fetch(`${API_BASE}/calendar/rooms?month=${calendarMonth + 1}&year=${calendarYear}`);
+        const payload = await res.json();
+        calendarData = payload.days || payload;
+      } catch (e) {
+        console.error('Calendar load error', e);
+        grid.innerHTML = '<div style="grid-column: span 7; text-align:center; color:#9a8f84;">Napaka pri nalaganju koledarja.</div>';
+        return;
+      }
+
+      grid.innerHTML = '';
+      const firstDay = new Date(calendarYear, calendarMonth, 1).getDay();
+      const startDay = firstDay === 0 ? 6 : firstDay - 1; // Monday-first
+      const daysInMonth = new Date(calendarYear, calendarMonth + 1, 0).getDate();
+
+      for (let i = 0; i < startDay; i++) {
+        const empty = document.createElement('div');
+        empty.style.cssText = 'min-height: 80px;';
+        grid.appendChild(empty);
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateKey = `${calendarYear}-${String(calendarMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const dayData = calendarData[dateKey] || { confirmed: [], pending: [], reservations: [] };
+        const hasConfirmed = (dayData.confirmed || []).length > 0;
+        const hasPending = (dayData.pending || []).length > 0;
+        let bg = '#fff';
+        if (hasConfirmed && hasPending) bg = '#fdf6e3';
+        else if (hasConfirmed) bg = '#f2fbf4';
+        else if (hasPending) bg = '#fff8e6';
+
+        // stage (check-in / mid / checkout)
+        let hasCheckin = false;
+        let hasMid = false;
+        let hasLast = false;
+        (dayData.reservations || []).forEach(r => {
+          const start = parseDDMMYYYY(r.date);
+          const n = parseInt(r.nights || '1', 10) || 1;
+          if (!start || n <= 0) return;
+          const current = new Date(dateKey);
+          const last = new Date(start);
+          last.setDate(start.getDate() + n - 1);
+          if (current.getTime() === start.getTime()) hasCheckin = true;
+          else if (current.getTime() === last.getTime()) hasLast = true;
+          else if (current > start && current < last) hasMid = true;
+        });
+
+        const cell = document.createElement('div');
+        const isToday = dateKey === todayISO();
+        const outline = isToday ? '2px solid #e74c3c' : (hasLast ? '2px dashed #8e8e8e' : '1px solid #e6e2da');
+        const effectiveBg = hasMid ? '#fef9f2' : bg;
+        cell.style.cssText = `min-height: 80px; border: ${outline}; border-radius: 8px; padding: 6px; cursor: pointer; background: ${effectiveBg};`;
+        cell.onmouseover = () => cell.style.background = '#f9f7f2';
+        cell.onmouseout = () => cell.style.background = effectiveBg;
+        cell.onclick = () => showDayDetails(dateKey, dayData);
+
+        const dayNum = document.createElement('div');
+        dayNum.style.cssText = 'font-weight: 600; margin-bottom: 4px;';
+        dayNum.textContent = day;
+        cell.appendChild(dayNum);
+
+        const rooms = document.createElement('div');
+        rooms.style.cssText = 'font-size: 12px; line-height: 1.4;';
+        const confirmedList = Array.from(new Set(dayData.confirmed || []));
+        const pendingList = Array.from(new Set(dayData.pending || []));
+        if (confirmedList.length) {
+          rooms.innerHTML += `<div style="color:#2e7d32; font-weight:600;">Potrjeno: ${confirmedList.join(', ')}</div>`;
+        }
+        if (pendingList.length) {
+          rooms.innerHTML += `<div style="color:#c27d00; font-weight:600;">Čaka: ${pendingList.join(', ')}</div>`;
+          // quick actions za pending
+          const pendingActions = (dayData.reservations || []).filter(r => r.status === 'pending');
+          if (pendingActions.length) {
+            rooms.innerHTML += pendingActions.map(r => {
+              const dataStr = encodeURIComponent(JSON.stringify(r));
+              return `<div style="margin-top:4px;">
+                <button class="btn-inline success" onclick="openConfirm('${dataStr}')">✅ ${r.name || 'Gost'}</button>
+                <button class="btn-inline danger" onclick="rejectReservation(${r.id})">❌</button>
+              </div>`;
+            }).join('');
+          }
+        }
+        if ((dayData.reservations || []).length) {
+          const tooltip = (dayData.reservations || [])
+            .map(r => {
+              const contact = [r.email, r.phone].filter(Boolean).join(' | ');
+              return `${r.name || 'Gost'} · ${r.people || '-'} oseb${r.kids ? ' (' + r.kids + ')' : ''}${r.location ? ' · ' + r.location : ''}${contact ? ' · ' + contact : ''}`;
+            })
+            .join('\\n');
+          cell.title = tooltip;
+        }
+        cell.appendChild(rooms);
+        grid.appendChild(cell);
+      }
+    }
+
+    async function renderTableCalendar() {
+      const grid = qs('table-calendar-grid');
+      const title = qs('table-calendar-title');
+      if (!grid || !title) return;
+      const monthNames = ['Januar', 'Februar', 'Marec', 'April', 'Maj', 'Junij', 'Julij', 'Avgust', 'September', 'Oktober', 'November', 'December'];
+      title.textContent = `${monthNames[calendarMonth]} ${calendarYear}`;
+      let data = {};
+      try {
+        const res = await fetch(`${API_BASE}/calendar/tables?month=${calendarMonth + 1}&year=${calendarYear}`);
+        data = await res.json();
+      } catch (e) {
+        grid.innerHTML = '<div style="grid-column: span 7; text-align:center; color:#9a8f84;">Napaka pri nalaganju koledarja miz.</div>';
+        return;
+      }
+      grid.innerHTML = '';
+      const firstDay = new Date(calendarYear, calendarMonth, 1).getDay();
+      const startDay = firstDay === 0 ? 6 : firstDay - 1;
+      const daysInMonth = new Date(calendarYear, calendarMonth + 1, 0).getDate();
+      for (let i = 0; i < startDay; i++) {
+        const empty = document.createElement('div');
+        empty.style.cssText = 'min-height: 80px;';
+        grid.appendChild(empty);
+      }
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateKey = `${calendarYear}-${String(calendarMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const dayData = data[dateKey] || { total_people: 0, capacity: 50, reservations: [] };
+        const reservations = dayData.reservations || [];
+        const pece = reservations.filter(r => (r.location || '').toLowerCase().includes('pe')).reduce((s,r)=>s+(r.people||0),0);
+        const vrtu = reservations.filter(r => (r.location || '').toLowerCase().includes('vrt')).reduce((s,r)=>s+(r.people||0),0);
+        const percentPece = TABLE_CAP['Pri peči'] ? (pece / TABLE_CAP['Pri peči']) * 100 : 0;
+        const percentVrtu = TABLE_CAP['Pri vrtu'] ? (vrtu / TABLE_CAP['Pri vrtu']) * 100 : 0;
+        const worst = Math.max(percentPece, percentVrtu);
+        const percent = worst;
+        let bg = '#e9f7ef'; // green-ish
+        if (percent >= 80) bg = '#fdecea';
+        else if (percent >= 50) bg = '#fff4d6';
+
+        const cell = document.createElement('div');
+        const isToday = dateKey === todayISO();
+        const outline = isToday ? '2px solid #e74c3c' : '1px solid #e6e2da';
+        cell.style.cssText = `min-height: 80px; border: ${outline}; border-radius: 8px; padding: 6px; cursor: pointer; background: ${bg};`;
+        cell.onmouseover = () => cell.style.outline = '1px solid #c9b99f';
+        cell.onmouseout = () => cell.style.outline = 'none';
+        cell.onclick = () => showTableDayDetails(dateKey, dayData);
+
+        const dayNum = document.createElement('div');
+        dayNum.style.cssText = 'font-weight: 600; margin-bottom: 4px;';
+        dayNum.textContent = day;
+        cell.appendChild(dayNum);
+
+        const info = document.createElement('div');
+        info.style.cssText = 'font-size: 12px; color: #4b3a28; display:grid; gap:2px;';
+        info.innerHTML = `
+          <span>Pri peči: ${pece}/${TABLE_CAP['Pri peči']}</span>
+          <span>Pri vrtu: ${vrtu}/${TABLE_CAP['Pri vrtu']}</span>
+        `;
+        cell.appendChild(info);
+        const pendingActions = reservations.filter(r => r.status === 'pending');
+        if (pendingActions.length) {
+          cell.innerHTML += pendingActions.map(r => {
+            const dataStr = encodeURIComponent(JSON.stringify(r));
+            return `<div style="margin-top:4px;">
+              <button class="btn-inline success" onclick="openConfirm('${dataStr}')">✅ ${r.name || 'Gost'}</button>
+              <button class="btn-inline danger" onclick="rejectReservation(${r.id || ''})">❌</button>
+            </div>`;
+          }).join('');
+        }
+        if (reservations.length) {
+          const tooltip = reservations
+            .map(r => {
+              const contact = [r.email, r.phone].filter(Boolean).join(' | ');
+              return `${r.time || '-'} · ${r.name || 'Gost'} · ${r.people || 0} oseb${r.location ? ' · ' + r.location : ''}${contact ? ' · ' + contact : ''}`;
+            })
+            .join('\\n');
+          cell.title = tooltip;
+        }
+
+        grid.appendChild(cell);
+      }
+    }
+
+    function changeMonth(delta) {
+      calendarMonth += delta;
+      if (calendarMonth < 0) {
+        calendarMonth = 11;
+        calendarYear -= 1;
+      } else if (calendarMonth > 11) {
+        calendarMonth = 0;
+        calendarYear += 1;
+      }
+      renderCalendar();
+      renderTableCalendar();
+      qs('month-select').value = calendarMonth.toString();
+      qs('year-input').value = calendarYear.toString();
+    }
+
+    function selectMonth(val) {
+      calendarMonth = parseInt(val, 10) || 0;
+      renderCalendar();
+      renderTableCalendar();
+      renderReservations(lastReservations || []);
+    }
+
+    function applyMonthYear() {
+      const m = parseInt(qs('month-select').value, 10) || 0;
+      const y = parseInt(qs('year-input').value, 10) || calendarYear;
+      calendarMonth = Math.min(11, Math.max(0, m));
+      calendarYear = y;
+      renderCalendar();
+      renderTableCalendar();
+      renderReservations(lastReservations || []);
+    }
+
+    async function showDayDetails(dateKey, dayData) {
+      const sidebar = qs('day-sidebar');
+      const dateTitle = qs('sidebar-date');
+      const content = qs('sidebar-content');
+      if (!sidebar || !dateTitle || !content) return;
+      sidebar.style.display = 'block';
+      dateTitle.textContent = dateKey;
+      try {
+        const res = await fetch(`${API_BASE}/reservations?date_from=${dateKey}&date_to=${dateKey}&type=room&limit=50`);
+        const data = await res.json();
+        const reservations = data.reservations || [];
+        if (!reservations.length) {
+          content.innerHTML = '<p style="color: #7a7a7a;">Ni rezervacij za ta dan.</p>';
+          return;
+        }
+        const sorted = reservations.sort((a,b) => (a.created_at || '').localeCompare(b.created_at || ''));
+        content.innerHTML = sorted.map(r => `
+          <div style="border: 1px solid #e6e2da; border-radius: 8px; padding: 10px; margin-bottom: 8px;">
+            <div style="font-weight: 600;">${r.name || 'Gost'}</div>
+            <div style="color: #7a7a7a; font-size: 13px;">
+              ${r.people || '-'} oseb ${r.kids ? '(' + r.kids + ' otrok)' : ''}<br>
+              ${r.location || 'Soba ni dodeljena'}<br>
+              <span class="badge status-${r.status}">${r.status}</span><br>
+              ${[r.email, r.phone].filter(Boolean).join(' | ')}
+            </div>
+            ${r.status === 'pending' ? `
+              <div style="margin-top: 8px;">
+                <button class="btn-inline success" onclick="openConfirm('${encodeURIComponent(JSON.stringify(r))}')">✅ Potrdi</button>
+                <button class="btn-inline danger" onclick="rejectReservation(${r.id})">❌ Zavrni</button>
+              </div>
+            ` : ''}
+          </div>
+        `).join('');
+      } catch (e) {
+        content.innerHTML = '<p style="color: #c0392b;">Napaka pri nalaganju podatkov za ta dan.</p>';
+      }
+    }
+
+    async function showTableDayDetails(dateKey, dayData) {
+      const sidebar = qs('table-sidebar');
+      const dateTitle = qs('table-sidebar-date');
+      const content = qs('table-sidebar-content');
+      if (!sidebar || !dateTitle || !content) return;
+      sidebar.style.display = 'block';
+      dateTitle.textContent = dateKey;
+      const reservations = dayData.reservations || [];
+      if (!reservations.length) {
+        content.innerHTML = '<p style="color:#7a7a7a;">Ni rezervacij za ta dan.</p>';
+        return;
+      }
+      content.innerHTML = reservations
+        .sort((a,b) => (a.time || '').localeCompare(b.time || ''))
+        .map(r => `
+          <div style="border: 1px solid #e6e2da; border-radius: 8px; padding: 10px; margin-bottom: 8px;">
+            <div style="font-weight: 600;">${r.name || 'Gost'} (${r.people || 0} oseb)</div>
+            <div style="color:#7a7a7a;font-size:13px;">${r.time || '-'} | ${r.location || ''} | ${r.status || ''}</div>
+            <div style="color:#7a7a7a;font-size:13px;">${[r.email, r.phone].filter(Boolean).join(' | ')}</div>
+          </div>
+        `).join('');
+    }
+
+    async function rejectReservation(id) {
+      if (!confirm('Ali res želite zavrniti rezervacijo?')) return;
+      const res = await fetch(`${API_BASE}/reservations/${id}/reject`, { method: 'POST' });
+      if (!res.ok) {
+        toast('Napaka pri zavrnitvi.', 'error');
+        return;
+      }
+      toast('Rezervacija zavrnjena.', 'success');
+      loadAll();
+    }
+
+    function openEdit(dataStr) {
+      const r = JSON.parse(decodeURIComponent(dataStr));
+      if (r.reservation_type === 'table') {
+        openTableEditModal(r);
+      } else {
+        openRoomEditModal(r);
+      }
+    }
+
+    function openRoomEditModal(r) {
+      qs('room-edit-id').textContent = r.id;
+      qs('room-edit-hidden-id').value = r.id;
+      qs('room-edit-status').value = r.status || 'pending';
+      qs('room-edit-date').value = parseDate(r.date);
+      qs('room-edit-nights').value = r.nights || 1;
+      qs('room-edit-location').value = normalizeRoom(r.location);
+      qs('room-edit-people').value = r.people || 1;
+      qs('room-edit-kids').value = r.kids || 0;
+      qs('room-edit-kids-ages').value = r.kids_small || '';
+      qs('room-edit-name').value = r.name || '';
+      qs('room-edit-email').value = r.email || '';
+      qs('room-edit-phone').value = r.phone || '';
+      qs('room-edit-note').value = r.note || '';
+      qs('room-edit-admin-notes').value = r.admin_notes || '';
+      qs('edit-room-modal').classList.add('active');
+    }
+    function closeRoomEditModal() { qs('edit-room-modal').classList.remove('active'); }
+
+    function openTableEditModal(r) {
+      qs('table-edit-id').textContent = r.id;
+      qs('table-edit-hidden-id').value = r.id;
+      qs('table-edit-status').value = r.status || 'pending';
+      qs('table-edit-date').value = parseDate(r.date);
+      qs('table-edit-time').value = r.time || '12:00';
+      qs('table-edit-location').value = r.location || 'Pri peči';
+      qs('table-edit-people').value = r.people || 1;
+      qs('table-edit-kids').value = r.kids || 0;
+      qs('table-edit-kids-ages').value = r.kids_small || '';
+      qs('table-edit-event-type').value = r.event_type || '';
+      qs('table-edit-name').value = r.name || '';
+      qs('table-edit-email').value = r.email || '';
+      qs('table-edit-phone').value = r.phone || '';
+      qs('table-edit-special-needs').value = r.special_needs || '';
+      qs('table-edit-admin-notes').value = r.admin_notes || '';
+      qs('edit-table-modal').classList.add('active');
+    }
+    function closeTableEditModal() { qs('edit-table-modal').classList.remove('active'); }
+
+    function parseDate(dateStr) {
+      if (!dateStr) return '';
+      const parts = String(dateStr).split('.');
+      if (parts.length === 3) {
+        return `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
+      }
+      return dateStr;
+    }
+    function formatToDDMMYYYY(dateStr) {
+      if (!dateStr) return '';
+      const parts = String(dateStr).split('-');
+      if (parts.length === 3) {
+        return `${parts[2].padStart(2,'0')}.${parts[1].padStart(2,'0')}.${parts[0]}`;
+      }
+      return dateStr;
+    }
+    function normalizeRoom(location) {
+      if (!location) return '';
+      const upper = String(location).toUpperCase();
+      if (upper.includes('ALJAZ') || upper.includes('ALJAŽ')) return 'ALJAZ';
+      if (upper.includes('JULIJA')) return 'JULIJA';
+      if (upper.includes('ANA')) return 'ANA';
+      return '';
+    }
+
+    qs('room-edit-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = qs('room-edit-hidden-id').value;
+      const payload = {
+        status: qs('room-edit-status').value,
+        date: formatToDDMMYYYY(qs('room-edit-date').value),
+        nights: parseInt(qs('room-edit-nights').value || '1'),
+        location: qs('room-edit-location').value,
+        people: parseInt(qs('room-edit-people').value || '1'),
+        kids: qs('room-edit-kids').value,
+        kids_small: qs('room-edit-kids-ages').value,
+        name: qs('room-edit-name').value,
+        email: qs('room-edit-email').value,
+        phone: qs('room-edit-phone').value,
+        note: qs('room-edit-note').value,
+        admin_notes: qs('room-edit-admin-notes').value,
+      };
+      const res = await fetch(`${API_BASE}/reservations/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        toast('Napaka pri shranjevanju sobe.', 'error');
+        return;
+      }
+      toast('Rezervacija sobe shranjena.', 'success');
+      closeRoomEditModal();
+      loadAll();
+    });
+
+    qs('table-edit-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = qs('table-edit-hidden-id').value;
+      const payload = {
+        status: qs('table-edit-status').value,
+        date: formatToDDMMYYYY(qs('table-edit-date').value),
+        time: qs('table-edit-time').value,
+        location: qs('table-edit-location').value,
+        people: parseInt(qs('table-edit-people').value || '1'),
+        kids: qs('table-edit-kids').value,
+        kids_small: qs('table-edit-kids-ages').value,
+        event_type: qs('table-edit-event-type').value,
+        name: qs('table-edit-name').value,
+        email: qs('table-edit-email').value,
+        phone: qs('table-edit-phone').value,
+        special_needs: qs('table-edit-special-needs').value,
+        admin_notes: qs('table-edit-admin-notes').value,
+      };
+      const res = await fetch(`${API_BASE}/reservations/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        toast('Napaka pri shranjevanju mize.', 'error');
+        return;
+      }
+      toast('Rezervacija mize shranjena.', 'success');
+      closeTableEditModal();
+      loadAll();
+    });
+
+    qs('new-room-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const payload = {
+        date: formatToDDMMYYYY(qs('new-room-date').value),
+        nights: parseInt(qs('new-room-nights').value || '1'),
+        location: qs('new-room-location').value,
+        people: parseInt(qs('new-room-people').value || '1'),
+        kids: qs('new-room-kids').value,
+        kids_small: qs('new-room-kids-ages').value,
+        name: qs('new-room-name').value,
+        email: qs('new-room-email').value,
+        phone: qs('new-room-phone').value,
+        note: qs('new-room-note').value,
+        status: 'confirmed',
+        reservation_type: 'room',
+        source: 'admin',
+      };
+      const res = await fetch(`${API_BASE}/reservations`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        toast(data.detail || 'Napaka pri shranjevanju.', 'error');
+        return;
+      }
+      if (data.warning) {
+        toast(data.warning, 'warning');
+      } else {
+        toast('Rezervacija sobe dodana.', 'success');
+      }
+      closeNewRoom();
+      loadAll();
+    });
+
+    qs('new-table-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const payload = {
+        date: formatToDDMMYYYY(qs('new-table-date').value),
+        time: qs('new-table-time').value,
+        location: qs('new-table-location').value,
+        people: parseInt(qs('new-table-people').value || '1'),
+        kids: qs('new-table-kids').value,
+        kids_small: qs('new-table-kids-ages').value,
+        event_type: qs('new-table-event-type').value,
+        name: qs('new-table-name').value,
+        email: qs('new-table-email').value,
+        phone: qs('new-table-phone').value,
+        special_needs: qs('new-table-special-needs').value,
+        status: 'confirmed',
+        reservation_type: 'table',
+        source: 'admin',
+      };
+      const res = await fetch(`${API_BASE}/reservations`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        toast(data.detail || 'Napaka pri shranjevanju.', 'error');
+        return;
+      }
+      if (data.warning) {
+        toast(data.warning, 'warning');
+      } else {
+        toast('Rezervacija mize dodana.', 'success');
+      }
+      clearNewTableForm();
+      closeNewTable();
+      loadAll();
+    });
+
+    async function exportCsv() {
+      const query = buildQuery();
+      const res = await fetch(`${API_BASE}/export?${query}`);
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'reservations.csv';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>

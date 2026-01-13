@@ -1,0 +1,40 @@
+id,date,time,nights,rooms,people,kids,kids_small,reservation_type,name,email,phone,location,note,status,source,created_at
+39,15.07.2026,,4,1,4,2,8 in 6 let,room,Maresus Satler,satlermarko@gmail.com,333333333,Sobe (dodelimo ob potrditvi),nope,pending,chat,2025-12-28T11:44:17.393019
+38,16.05.2026,,3,1,4,,,room,satler msrko,satlermarko@gmail.com,333333333,Sobe (dodelimo ob potrditvi),Večerje: 4 oseb (25€/oseba),pending,chat,2025-12-27T12:36:01.990804
+36,16.07.2026,,3,1,4,,,room,Marko Satler,satlermarko@gmail.com,444444444,Sobe (dodelimo ob potrditvi),Večerje: 4 oseb (25€/oseba),rejected,chat,2025-12-27T11:44:46.719576
+37,12.12.2026,,3,1,4,,,room,satler marko,satlermarko@gmail.com,444555666,Sobe (dodelimo ob potrditvi),Večerje: 4 oseb (25€/oseba),confirmed,chat,2025-12-27T10:58:54.439124
+35,12.07.2026,13:00,,,4,,,table,Marko Satler,satlermarko@GMAIL.COM,444333444,Jedilnica Pri peči,,rejected,chat,2025-12-27T08:36:02.189946
+34,19.02.2026,,3,1,4,,,room,Marko Satler,satlermarko@gmail.com,555555555,Sobe (dodelimo ob potrditvi),,confirmed,chat,2025-12-27T08:30:34.384040
+33,12.02.2026,,2,1,4,,,room,marko satler,satlermarko@gmail.com,444444444,Sobe (dodelimo ob potrditvi),Večerje: 4 oseb (25€/oseba),pending,chat,2025-12-27T08:28:18.252342
+32,18.11.2026,,4,1,4,,,room,Marko Satler,satlermarko@gmail.com,04156677,Sobe (dodelimo ob potrditvi),,pending,chat,2025-12-27T08:19:50.309824
+31,12.06.2026,,5,1,4,,,room,marko satler,satlermarko@gmail.com,523453245,Sobe (dodelimo ob potrditvi),,pending,chat,2025-12-27T08:09:11.763726
+30,25.6.2026,,4,1,4,,,room,matej luna,satlermarko@gmail.com,555555555,Sobe (dodelimo ob potrditvi),Večerje: 4 oseb (25€/oseba),pending,chat,2025-12-16T19:44:29.867067
+29,20.12.2025,,5,1,2,,,room,Tone Gracner,satlermarko@gmail.com,041567890,Sobe (dodelimo ob potrditvi),Večerje: 4 oseb (25€/oseba),pending,chat,2025-12-16T19:41:07.979507
+28,01.10.2026,,2,1,2,,,room,Integration Test,integration@test.com,041 999 888,Julija,,confirmed,wordpress_room,2025-12-16T19:31:09.467827
+27,15.09.2026,,,,3,,,room,Admin Test,admin.test@example.com,041 000 000,,,processing,test,2025-12-16T19:30:56.670277
+26,15.09.2026,,,,5,,,room,Admin Test,admin.test@example.com,041 000 000,,,processing,test,2025-12-16T19:30:51.207098
+25,15.09.2026,,,,3,,,room,Admin Test,admin.test@example.com,041 000 000,,,rejected,test,2025-12-16T19:30:40.894982
+24,15.09.2026,,,,3,,,room,Admin Test,admin.test@example.com,041 000 000,,,confirmed,test,2025-12-16T19:30:29.774009
+23,01.01.2027,,,,2,,,room,Test,test@test.com,,,,pending,test,2025-12-16T19:30:23.833806
+22,25.08.2026,,2,1,4,,,room,Ana Kovač,ana@test.si,040 111 222,Soba Ana,Z zajtrkom,pending,test,2025-12-16T19:30:12.985930
+21,20.07.2026,13:00,,,6,,,table,Janez Novak,janez@example.com,031 987 654,Pri peči,,pending,wordpress_table,2025-12-16T19:29:56.998546
+20,15.07.2026,,3,1,2,,,room,Test Uporabnik,test@example.com,041 123 456,Aljaž,Testna rezervacija,pending,wordpress_room,2025-12-16T19:29:52.045309
+19,01.10.2026,,2,1,2,,,room,Integration Test,integration@test.com,041 999 888,Julija,,pending,wordpress_room,2025-12-16T11:57:59.346158
+18,15.09.2026,,,,3,,,room,Admin Test,admin.test@example.com,041 000 000,,,pending,test,2025-12-16T11:57:45.388229
+17,15.09.2026,,,,3,,,room,Admin Test,admin.test@example.com,041 000 000,,,pending,test,2025-12-16T11:57:41.210203
+16,15.09.2026,,,,3,,,room,Admin Test,admin.test@example.com,041 000 000,,,pending,test,2025-12-16T11:57:35.989258
+15,15.09.2026,,,,3,,,room,Admin Test,admin.test@example.com,041 000 000,,,pending,test,2025-12-16T11:57:32.808511
+14,01.01.2027,,,,2,,,room,Test,test@test.com,,,,pending,test,2025-12-16T11:57:27.398942
+13,25.08.2026,,2,1,4,,,room,Ana Kovač,ana@test.si,040 111 222,Soba Ana,Z zajtrkom,pending,test,2025-12-16T11:57:18.805642
+12,20.07.2026,13:00,,,6,,,table,Janez Novak,janez@example.com,031 987 654,Pri peči,,rejected,wordpress_table,2025-12-16T11:57:04.984282
+11,15.07.2026,,3,1,2,,,room,Test Uporabnik,test@example.com,041 123 456,Aljaž,Testna rezervacija,rejected,wordpress_room,2025-12-16T11:57:00.150866
+10,11.7.2026,,4,1,4,,,room,Marko Sastler,satlermarko@gmail.com,045678987,Sobe (dodelimo ob potrditvi),,pending,chat,2025-12-15T15:15:15.489629
+9,29.8.2026,,3,1,3,,,room,Marko Satler,satlermarko@gmail.com,041567456,Sobe (dodelimo ob potrditvi),Večerje: 2 oseb (25€/oseba),pending,chat,2025-12-15T09:44:17.320458
+8,1.3.2026,12:00,,,6,,,table,MArko Sasler,satlermarko@gmail.com,041 678678,Jedilnica Pri peči,,confirmed,chat,2025-12-14T19:01:08.408952
+6,27.9.2026,,5,2,5,,,room,Marko Sastler,satlermarko@gmail.com,041567456,Sobe (dodelimo ob potrditvi),Večerje: 5 oseb (25€/oseba),pending,chat,2025-12-08T08:17:07.633373
+7,27.11.2026,,4,1,2,,,room,marko Satler,marko@creative-media.si,041 567889,Sobe (dodelimo ob potrditvi),,pending,chat,2025-12-08T07:22:42.427855
+5,12.9.2026,,6,1,4,,,room,Marko Satler,satlermarko@gmail.com,041 567 789,Sobe (dodelimo ob potrditvi),Večerje: 4 oseb (25€/oseba),pending,chat,2025-12-04T11:15:40.523146
+4,20.12.2025,13:00,,,6,,,table,Test User,test@test.si,041123456,Jedilnica Pri peči,,pending,test,2025-12-04T10:11:53.449801
+3,02.02.2026,,3,1,4,,,room,Test User,test@test.si,041123456,,,pending,test,2025-12-04T10:11:49.227245
+2,20.12.2025,13:00,,,6,,,table,Test User,test@test.si,041123456,Jedilnica Pri peči,,pending,test,2025-12-04T10:09:11.212373
+1,02.02.2026,,3,1,4,,,room,Test User,test@test.si,041123456,,,pending,test,2025-12-04T10:09:08.322702

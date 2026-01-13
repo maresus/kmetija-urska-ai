@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Urška – Pogovori</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand: #7b5e3b;
+      --bg: #f5f4f1;
+      --card: #fff;
+      --muted: #7a7a7a;
+      --border: #e6e2da;
+      --shadow: 0 10px 30px rgba(0,0,0,0.06);
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: #1b1f1a;
+      line-height: 1.6;
+      padding-bottom: 32px;
+    }
+    .page {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 20px;
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 18px;
+    }
+    .title { font-size: 1.3rem; font-weight: 700; display: flex; gap: 10px; align-items: center; }
+    .subtitle { color: var(--muted); font-size: 0.95rem; }
+    .btn {
+      border: none;
+      cursor: pointer;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-weight: 600;
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      background: var(--brand);
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(123,94,59,0.25);
+      text-decoration: none;
+    }
+    .btn.secondary { background: #f1ede5; color: #4b3a28; box-shadow: none; }
+    .card {
+      background: var(--card);
+      padding: 16px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+    }
+    .filters {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      align-items: end;
+    }
+    label { font-weight: 600; font-size: 13px; color: #3b2d1e; }
+    select, input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+      font-size: 14px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    th, td {
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 1px solid #f0ede8;
+      vertical-align: top;
+    }
+    th { color: #4b3a28; font-size: 13px; }
+    .muted { color: var(--muted); font-size: 12px; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      background: #f1ede5;
+      color: #4b3a28;
+    }
+    .pill.warn { background: #fff4d6; color: #8a6500; }
+    .nowrap { white-space: nowrap; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div>
+        <div class="title">💬 Pogovori z AI</div>
+        <div class="subtitle">Pregled sej in vprašanj</div>
+      </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <a class="btn secondary" href="/admin">⬅ Nazaj na admin</a>
+        <button class="btn" id="refreshBtn">Osveži</button>
+      </div>
+    </header>
+
+    <div class="card">
+      <div class="filters">
+        <div>
+          <label for="limit">Število zadnjih pogovorov</label>
+          <select id="limit">
+            <option value="100">100</option>
+            <option value="200" selected>200</option>
+            <option value="500">500</option>
+          </select>
+        </div>
+        <div>
+          <label for="followupOnly">Samo vprašanja za follow‑up</label>
+          <select id="followupOnly">
+            <option value="false" selected>Ne</option>
+            <option value="true">Da</option>
+          </select>
+        </div>
+        <div>
+          <label>&nbsp;</label>
+          <button class="btn" id="loadBtn">Naloži</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div id="stats" class="muted"></div>
+      <div style="overflow:auto; margin-top:8px;">
+        <table>
+          <thead>
+            <tr>
+              <th class="nowrap">Session</th>
+              <th class="nowrap">Sporočila</th>
+              <th class="nowrap">Zadnji čas</th>
+              <th>Zadnje vprašanje</th>
+              <th class="nowrap">Intent</th>
+              <th class="nowrap">Follow‑up</th>
+              <th class="nowrap">Pogovor</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = '/api/admin';
+    const tableBody = document.getElementById('tableBody');
+    const limitEl = document.getElementById('limit');
+    const followupEl = document.getElementById('followupOnly');
+    const statsEl = document.getElementById('stats');
+    const loadBtn = document.getElementById('loadBtn');
+    const refreshBtn = document.getElementById('refreshBtn');
+
+    function escapeHtml(text) {
+      return String(text || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    function sessionDomId(sessionId) {
+      return String(sessionId || 'no-session').replace(/[^a-zA-Z0-9_-]/g, '_');
+    }
+
+    function formatDate(value) {
+      if (!value) return '-';
+      return value;
+    }
+
+    async function loadSessionDetail(sessionId, targetEl) {
+      const res = await fetch(`${API_BASE}/conversations/session/${encodeURIComponent(sessionId)}`);
+      const data = await res.json();
+      const list = data.conversations || [];
+      if (!list.length) {
+        targetEl.innerHTML = '<div class="muted">Ni pogovora za to sejo.</div>';
+        return;
+      }
+      const rows = list.map(item => `
+        <div style="padding:8px 0; border-bottom:1px solid #f0ede8;">
+          <div class="muted">${escapeHtml(item.created_at)} · ${escapeHtml(item.intent || '-')}</div>
+          <div><strong>Uporabnik:</strong> ${escapeHtml(item.user_message)}</div>
+          <div><strong>AI:</strong> ${escapeHtml(item.bot_response)}</div>
+        </div>
+      `).join('');
+      targetEl.innerHTML = rows;
+    }
+
+    async function loadConversations() {
+      const limit = limitEl.value;
+      const needsFollowup = followupEl.value;
+      const res = await fetch(`${API_BASE}/conversations?limit=${limit}&needs_followup_only=${needsFollowup}`);
+      const data = await res.json();
+      const list = data.conversations || [];
+      const stats = data.stats || {};
+      statsEl.textContent = `Skupaj: ${stats.total || list.length} • Za follow‑up: ${stats.followup || 0}`;
+
+      const sessions = {};
+      list.forEach(item => {
+        const sid = item.session_id || 'no-session';
+        if (!sessions[sid]) {
+          sessions[sid] = { session_id: sid, messages: [], last: item, followup: false };
+        }
+        sessions[sid].messages.push(item);
+        sessions[sid].followup = sessions[sid].followup || !!item.needs_followup;
+        if (!sessions[sid].last || (item.created_at || '') > (sessions[sid].last.created_at || '')) {
+          sessions[sid].last = item;
+        }
+      });
+
+      const sessionList = Object.values(sessions).sort((a, b) => {
+        const aTime = a.last?.created_at || '';
+        const bTime = b.last?.created_at || '';
+        return bTime.localeCompare(aTime);
+      });
+
+      tableBody.innerHTML = sessionList.map(s => {
+        const domId = sessionDomId(s.session_id);
+        const lastItem = s.last || {};
+        const canView = s.session_id && s.session_id !== 'no-session';
+        return `
+          <tr>
+            <td class="nowrap">${escapeHtml(s.session_id)}</td>
+            <td class="nowrap">${s.messages.length}</td>
+            <td class="nowrap">${escapeHtml(formatDate(lastItem.created_at))}</td>
+            <td>${escapeHtml(lastItem.user_message || '-')}</td>
+            <td class="nowrap"><span class="pill">${escapeHtml(lastItem.intent || '-')}</span></td>
+            <td class="nowrap">${s.followup ? '<span class="pill warn">DA</span>' : '<span class="pill">NE</span>'}</td>
+            <td class="nowrap">
+              ${canView ? `<button class="btn secondary" data-session="${escapeHtml(s.session_id)}" data-target="${domId}">Poglej</button>` : '<span class="muted">-</span>'}
+            </td>
+          </tr>
+          <tr id="detail-${domId}" style="display:none;">
+            <td colspan="7">
+              <div class="card" style="box-shadow:none; border:1px solid #f0ede8; margin:0;">
+                <div class="muted">Nalagam pogovor ...</div>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      document.querySelectorAll('button[data-session]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const sessionId = btn.getAttribute('data-session');
+          const targetId = btn.getAttribute('data-target');
+          const detailRow = document.getElementById(`detail-${targetId}`);
+          if (!detailRow) return;
+          const isOpen = detailRow.style.display !== 'none';
+          if (isOpen) {
+            detailRow.style.display = 'none';
+            return;
+          }
+          detailRow.style.display = 'table-row';
+          const contentEl = detailRow.querySelector('.card');
+          await loadSessionDetail(sessionId, contentEl);
+        });
+      });
+    }
+
+    loadBtn.addEventListener('click', loadConversations);
+    refreshBtn.addEventListener('click', loadConversations);
+    loadConversations();
+  </script>
+</body>
+</html>

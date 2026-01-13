@@ -1,0 +1,316 @@
+2026-01-09T04:14:24.218505 score=0.50 q=ali lahko jahamo konja
+2026-01-09T04:14:51.671513 score=0.50 q=kaj pa ponija?
+2026-01-09T04:14:57.959178 score=0.67 q=Ponija če lahko jahamo
+2026-01-09T04:19:26.048165 score=0.50 q=ali lahko jahamo konja
+2026-01-09T04:19:30.122344 score=0.50 q=ali lahko jahamo konja
+2026-01-09T04:20:31.424302 score=0.60 q=ali lahko jahamo konja/ponija”
+2026-01-09T04:20:33.604844 score=0.60 q=ali lahko jahamo konja/ponija
+2026-01-09T04:23:23.677400 score=0.50 q=ali lahko jahamo konja?
+2026-01-09T04:46:57.333183 score=0.50 q=kaj pa ljudje
+2026-01-09T04:47:28.593776 score=0.50 q=krave če imate
+2026-01-09T04:47:59.780504 score=0.67 q=kako naročim izdelke
+2026-01-09T04:47:59.804233 score=0.50 q=kakšna vina imate
+2026-01-09T04:51:56.376488 score=0.33 q=kako pridem do Areha
+2026-01-09T04:52:07.518932 score=0.33 q=kako pridem do Areha
+2026-01-09T04:53:27.570679 score=0.33 q=kako pridem do Areha
+2026-01-09T05:03:35.746580 score=0.33 q=kako pridem do Areha
+2026-01-09T05:12:00.704413 score=0.33 q=kako pridem do Areha
+2026-01-09T05:38:49.999914 score=0.33 q=Ob kateri uri odprete?
+2026-01-09T05:38:50.082827 score=0.62 q=Ali imate odprto za praznike?
+2026-01-09T05:38:50.123306 score=0.50 q=Ali moram rezervirati vnaprej?
+2026-01-09T05:38:50.350548 score=0.33 q=Imate vegetarijansko hrano?
+2026-01-09T05:38:50.408170 score=0.33 q=Koliko stane kosilo?
+2026-01-09T05:38:50.434382 score=0.67 q=Imate degustacijski meni?
+2026-01-09T05:38:50.448645 score=0.40 q=Koliko hodov ima degustacijski meni?
+2026-01-09T05:38:50.469853 score=0.50 q=Ali prilagodite hrano za alergike?
+2026-01-09T05:38:50.543997 score=0.33 q=Koliko sob imate?
+2026-01-09T05:38:50.581069 score=0.67 q=Katere sobe imate?
+2026-01-09T05:38:50.606745 score=0.38 q=Koliko stane soba za 2 osebi?
+2026-01-09T05:38:50.632342 score=0.33 q=Imate družinsko sobo?
+2026-01-09T05:38:50.774347 score=0.33 q=Lahko pridem s psom?
+2026-01-09T05:38:50.797180 score=0.50 q=Kako plačam?
+2026-01-09T05:38:50.859238 score=0.50 q=Kaj je vključeno v ceno sobe?
+2026-01-09T05:38:50.882433 score=0.38 q=Katera soba je najboljša za družino?
+2026-01-09T05:38:50.906745 score=0.40 q=Koliko oseb gre v eno sobo?
+2026-01-09T05:38:50.955517 score=0.50 q=Povejte mi o družini.
+2026-01-09T05:38:51.005422 score=0.62 q=Kdo kuha pri vas?
+2026-01-09T05:38:51.054927 score=0.33 q=Koliko zemlje imate?
+2026-01-09T05:38:51.116657 score=0.50 q=Lahko otroci vidijo živali?
+2026-01-09T05:38:51.278433 score=0.67 q=Kako vas najdem?
+2026-01-09T05:38:51.301750 score=0.25 q=Koliko ste oddaljeni od Maribora?
+2026-01-09T05:38:51.354904 score=0.33 q=Kakšen je vaš email?
+2026-01-09T05:38:51.418007 score=0.33 q=Imate koordinate za GPS?
+2026-01-09T05:38:51.562203 score=0.33 q=Imate domačo salamo?
+2026-01-09T05:38:51.583854 score=0.60 q=Kje lahko kupim vaše izdelke?
+2026-01-09T05:38:51.641462 score=0.67 q=Imate darilne bone?
+2026-01-09T05:38:51.687992 score=0.67 q=Ali lahko kupim izdelke preko spleta?
+2026-01-09T05:38:51.726824 score=0.33 q=Imate vinsko karto?
+2026-01-09T05:38:51.751123 score=0.50 q=Ali ponujate vinsko spremljavo?
+2026-01-09T05:38:51.775753 score=0.62 q=Ali imate lokalna vina?
+2026-01-09T05:38:51.849293 score=0.38 q=Kakšen izlet priporočate v bližini?
+2026-01-09T05:38:51.888807 score=0.50 q=Kako pridem v Rače?
+2026-01-09T05:51:05.163438 score=0.38 q=Koliko stane soba za 2 osebi?
+2026-01-09T05:51:05.187243 score=0.33 q=Imate družinsko sobo?
+2026-01-09T05:51:05.374514 score=0.50 q=Kaj je vključeno v ceno sobe?
+2026-01-09T05:51:05.395712 score=0.38 q=Katera soba je najboljša za družino?
+2026-01-09T05:51:05.418921 score=0.40 q=Koliko oseb gre v eno sobo?
+2026-01-09T05:51:06.110866 score=0.50 q=Lahko otroci vidijo živali?
+2026-01-09T05:51:06.555097 score=0.33 q=Imate domačo salamo?
+2026-01-09T05:51:06.649546 score=0.60 q=Kje lahko kupim vaše izdelke?
+2026-01-09T05:51:06.717945 score=0.67 q=Imate darilne bone?
+2026-01-09T05:51:06.780705 score=0.33 q=Imate vinsko karto?
+2026-01-09T05:51:06.817141 score=0.62 q=Ali imate lokalna vina?
+2026-01-09T05:51:07.047395 score=0.38 q=Kakšen izlet priporočate v bližini?
+2026-01-09T05:51:07.086364 score=0.50 q=Kako pridem v Rače?
+2026-01-09T05:51:07.183977 score=0.50 q=Rad bi rezerviral sobo za vikend.
+2026-01-09T05:51:07.211471 score=0.50 q=Ali lahko rezerviram sobo?
+2026-01-09T05:56:41.257643 score=0.33 q=Imate družinsko sobo?
+2026-01-09T05:57:44.374080 score=0.33 q=Imate družinsko sobo?
+2026-01-09T05:58:40.312973 score=0.33 q=Imate družinsko sobo?
+2026-01-09T05:58:40.521532 score=0.38 q=Katera soba je najboljša za družino?
+2026-01-09T05:58:41.330273 score=0.33 q=Imate domačo salamo?
+2026-01-09T05:58:41.470246 score=0.33 q=Imate vinsko karto?
+2026-01-09T05:58:41.718643 score=0.38 q=Kakšen izlet priporočate v bližini?
+2026-01-09T05:58:41.758685 score=0.50 q=Kako pridem v Rače?
+2026-01-09T05:58:41.857817 score=0.50 q=Rad bi rezerviral sobo za vikend.
+2026-01-09T05:58:41.886174 score=0.50 q=Ali lahko rezerviram sobo?
+2026-01-09T06:00:35.997488 score=0.38 q=Katera soba je najboljša za družino?
+2026-01-09T06:00:37.142500 score=0.38 q=Kakšen izlet priporočate v bližini?
+2026-01-09T06:00:37.184270 score=0.50 q=Kako pridem v Rače?
+2026-01-09T06:58:28.407720 score=0.38 q=Kakšen izlet priporočate v bližini?
+2026-01-09T06:58:28.447586 score=0.50 q=Kako pridem v Rače?
+2026-01-09T07:07:41.532135 score=0.38 q=Kakšen izlet priporočate v bližini?
+2026-01-09T07:07:41.573492 score=0.50 q=Kako pridem v Rače?
+2026-01-09T07:07:41.678498 score=0.70 q=Lahko praznujemo obletnico pri vas?
+2026-01-09T07:07:41.703154 score=0.33 q=Imate prostor za poroko?
+2026-01-09T07:07:41.728422 score=0.25 q=Koliko stane najem prostora?
+2026-01-09T07:07:41.753356 score=0.50 q=Ali organizirate teambuilding?
+2026-01-09T07:07:41.778843 score=0.33 q=Lahko pripravite pogrebščino?
+2026-01-09T07:07:41.803789 score=0.67 q=Imate prostor za 30 oseb?
+2026-01-09T07:07:41.828993 score=0.50 q=Koliko ljudi lahko sprejmete?
+2026-01-09T07:07:41.879749 score=0.25 q=Imate prostor za poslovni sestanek?
+2026-01-09T07:07:41.905177 score=0.33 q=Lahko organiziramo piknik?
+2026-01-09T07:07:41.930412 score=0.25 q=Imate zunanji prostor za praznovanje?
+2026-01-09T07:07:41.954841 score=0.50 q=Ali pripravljate silvestrovo?
+2026-01-09T07:07:41.980426 score=0.67 q=Imate božični meni?
+2026-01-09T07:07:42.037237 score=0.33 q=Imate igrišče za otroke?
+2026-01-09T07:07:42.135838 score=0.58 q=Kaj lahko otroci počnejo pri vas?
+2026-01-09T07:07:42.163038 score=0.62 q=Ali imate otroški meni?
+2026-01-09T07:07:42.188989 score=0.33 q=Koliko stane otrok?
+2026-01-09T07:07:42.214323 score=0.25 q=Do koliko let je otrok zastonj?
+2026-01-09T07:07:42.240712 score=0.33 q=Imate otroški stol?
+2026-01-09T07:07:42.266401 score=0.62 q=Ali imate previjalno mizo?
+2026-01-09T07:07:42.292164 score=0.50 q=Je varno za malčke?
+2026-01-09T07:07:42.333226 score=0.33 q=Imate posteljo za dojenčka?
+2026-01-09T07:07:42.371529 score=0.62 q=Ali imate kotiček za otroke?
+2026-01-09T07:07:42.396050 score=0.50 q=Je primerno za 3-letnika?
+2026-01-09T07:07:42.420746 score=0.33 q=Imate animacije za otroke?
+2026-01-09T07:07:42.445671 score=0.33 q=Kaj počnemo če dežuje?
+2026-01-09T07:07:42.472035 score=0.33 q=Imate notranjo jedilnico?
+2026-01-09T07:07:42.498398 score=0.50 q=Ali je terasa pokrita?
+2026-01-09T07:07:42.523910 score=0.50 q=Kdaj je najboljši čas za obisk?
+2026-01-09T07:07:42.550543 score=0.33 q=Katera sezona je najlepša?
+2026-01-09T07:07:42.588630 score=0.50 q=Imate gretje?
+2026-01-09T07:07:42.614516 score=0.33 q=Je poleti vroče v sobah?
+2026-01-09T07:07:42.665281 score=0.62 q=Ali imate sneg pozimi?
+2026-01-09T07:07:42.690737 score=0.33 q=Kako pridem z avtobusom?
+2026-01-09T07:07:42.717714 score=0.33 q=Imate postajališče za avtodome?
+2026-01-09T07:07:42.742787 score=0.33 q=Lahko pridem s kolesom?
+2026-01-09T07:07:42.845251 score=0.33 q=Imate transfer iz letališča?
+2026-01-09T07:07:42.871703 score=0.33 q=Kako daleč je Ljubljana?
+2026-01-09T07:07:42.897956 score=0.20 q=Koliko časa traja vožnja iz Celja?
+2026-01-09T07:07:42.923479 score=0.50 q=Je primerno za motoriste?
+2026-01-09T07:07:42.949907 score=0.33 q=Imate romantično sobo?
+2026-01-09T07:07:42.990484 score=0.50 q=Imate jacuzzi?
+2026-01-09T07:07:43.040811 score=0.67 q=Je primerno za medene tedne?
+2026-01-09T07:07:43.064056 score=0.25 q=Lahko dobim sobo s pogledom?
+2026-01-09T07:07:43.089095 score=0.50 q=Imate šampanjec?
+2026-01-09T07:07:43.115489 score=0.25 q=Lahko pripravite presenečenje za partnerja?
+2026-01-09T07:07:43.140865 score=0.50 q=Imate masažo?
+2026-01-09T07:07:43.168166 score=0.17 q=Kaj priporočate za parček?
+2026-01-09T07:07:43.265852 score=0.33 q=Kje lahko hodimo?
+2026-01-09T07:07:43.293689 score=0.33 q=Imate pohodne poti?
+2026-01-09T07:07:43.334215 score=0.33 q=Lahko grem na smučanje?
+2026-01-09T07:07:43.488650 score=0.50 q=Je primerno za kolesarje?
+2026-01-09T07:07:43.586711 score=0.33 q=Kje lahko plavamo?
+2026-01-09T07:07:43.614192 score=0.50 q=Imate bazen?
+2026-01-09T07:07:43.714163 score=0.33 q=Kje je najbližje jezero?
+2026-01-09T07:07:43.741223 score=0.33 q=Lahko grem na ribolov?
+2026-01-09T07:07:43.870269 score=0.33 q=Kje je golf igrišče?
+2026-01-09T07:07:43.898217 score=0.38 q=Ali organizirate vodene ture?
+2026-01-09T07:07:43.924241 score=0.33 q=Imate nordijsko hojo?
+2026-01-09T07:07:43.951140 score=0.33 q=Imate televizijo v sobi?
+2026-01-09T07:07:43.991001 score=0.50 q=Imate Netflix?
+2026-01-09T07:07:44.041696 score=0.33 q=Imate prostor za delo?
+2026-01-09T07:07:44.120941 score=0.25 q=Lahko napolnim električni avto?
+2026-01-09T07:07:44.145525 score=0.50 q=Imate polnilnico za EV?
+2026-01-09T07:07:44.173549 score=0.33 q=Imate halal hrano?
+2026-01-09T07:07:44.200263 score=0.50 q=Ali pripravljate košer hrano?
+2026-01-09T07:07:44.225043 score=0.33 q=Imate hrano za diabetike?
+2026-01-09T07:07:44.252710 score=0.12 q=Kaj če sem alergičen na oreščke?
+2026-01-09T07:07:44.278280 score=0.62 q=Ali imate brezalkoholno pijačo?
+2026-01-09T07:07:44.305352 score=0.50 q=Imate pivo?
+2026-01-09T07:07:44.330132 score=0.33 q=Kakšne sokove imate?
+2026-01-09T07:07:44.356647 score=0.50 q=Imate kavo?
+2026-01-09T07:25:08.408647 score=0.38 q=Kakšen izlet priporočate v bližini?
+2026-01-09T07:25:08.447918 score=0.50 q=Kako pridem v Rače?
+2026-01-09T07:25:08.553466 score=0.70 q=Lahko praznujemo obletnico pri vas?
+2026-01-09T07:25:08.578977 score=0.33 q=Imate prostor za poroko?
+2026-01-09T07:25:08.604340 score=0.25 q=Koliko stane najem prostora?
+2026-01-09T07:25:08.627631 score=0.50 q=Ali organizirate teambuilding?
+2026-01-09T07:25:08.653264 score=0.33 q=Lahko pripravite pogrebščino?
+2026-01-09T07:25:08.678530 score=0.67 q=Imate prostor za 30 oseb?
+2026-01-09T07:25:08.704337 score=0.50 q=Koliko ljudi lahko sprejmete?
+2026-01-09T07:25:08.754008 score=0.25 q=Imate prostor za poslovni sestanek?
+2026-01-09T07:25:08.778768 score=0.33 q=Lahko organiziramo piknik?
+2026-01-09T07:25:08.802875 score=0.25 q=Imate zunanji prostor za praznovanje?
+2026-01-09T07:25:08.828098 score=0.50 q=Ali pripravljate silvestrovo?
+2026-01-09T07:25:08.854502 score=0.67 q=Imate božični meni?
+2026-01-09T07:25:08.909157 score=0.33 q=Imate igrišče za otroke?
+2026-01-09T07:25:09.006764 score=0.58 q=Kaj lahko otroci počnejo pri vas?
+2026-01-09T07:25:09.033982 score=0.62 q=Ali imate otroški meni?
+2026-01-09T07:25:09.059558 score=0.33 q=Koliko stane otrok?
+2026-01-09T07:25:09.085129 score=0.25 q=Do koliko let je otrok zastonj?
+2026-01-09T07:25:09.112449 score=0.33 q=Imate otroški stol?
+2026-01-09T07:25:09.137438 score=0.62 q=Ali imate previjalno mizo?
+2026-01-09T07:25:09.164815 score=0.50 q=Je varno za malčke?
+2026-01-09T07:25:09.204236 score=0.33 q=Imate posteljo za dojenčka?
+2026-01-09T07:25:09.245359 score=0.62 q=Ali imate kotiček za otroke?
+2026-01-09T07:25:09.270253 score=0.50 q=Je primerno za 3-letnika?
+2026-01-09T07:25:09.297419 score=0.33 q=Imate animacije za otroke?
+2026-01-09T07:25:09.322460 score=0.33 q=Kaj počnemo če dežuje?
+2026-01-09T07:25:09.349186 score=0.33 q=Imate notranjo jedilnico?
+2026-01-09T07:25:09.375670 score=0.50 q=Ali je terasa pokrita?
+2026-01-09T07:25:09.401173 score=0.50 q=Kdaj je najboljši čas za obisk?
+2026-01-09T07:25:09.428558 score=0.33 q=Katera sezona je najlepša?
+2026-01-09T07:25:09.468098 score=0.50 q=Imate gretje?
+2026-01-09T07:25:09.495221 score=0.33 q=Je poleti vroče v sobah?
+2026-01-09T07:25:09.547055 score=0.62 q=Ali imate sneg pozimi?
+2026-01-09T07:25:09.571197 score=0.33 q=Kako pridem z avtobusom?
+2026-01-09T07:25:09.599089 score=0.33 q=Imate postajališče za avtodome?
+2026-01-09T07:25:09.624837 score=0.33 q=Lahko pridem s kolesom?
+2026-01-09T07:25:09.725908 score=0.33 q=Imate transfer iz letališča?
+2026-01-09T07:25:09.751879 score=0.33 q=Kako daleč je Ljubljana?
+2026-01-09T07:25:09.775537 score=0.20 q=Koliko časa traja vožnja iz Celja?
+2026-01-09T07:25:09.799467 score=0.50 q=Je primerno za motoriste?
+2026-01-09T07:25:09.825469 score=0.33 q=Imate romantično sobo?
+2026-01-09T07:25:09.863278 score=0.50 q=Imate jacuzzi?
+2026-01-09T07:25:09.915452 score=0.67 q=Je primerno za medene tedne?
+2026-01-09T07:25:09.939996 score=0.25 q=Lahko dobim sobo s pogledom?
+2026-01-09T07:25:09.965402 score=0.50 q=Imate šampanjec?
+2026-01-09T07:25:09.989544 score=0.25 q=Lahko pripravite presenečenje za partnerja?
+2026-01-09T07:25:10.015490 score=0.50 q=Imate masažo?
+2026-01-09T07:25:10.040680 score=0.17 q=Kaj priporočate za parček?
+2026-01-09T07:25:10.139533 score=0.33 q=Kje lahko hodimo?
+2026-01-09T07:25:10.167740 score=0.33 q=Imate pohodne poti?
+2026-01-09T07:25:10.206957 score=0.33 q=Lahko grem na smučanje?
+2026-01-09T07:25:10.355409 score=0.50 q=Je primerno za kolesarje?
+2026-01-09T07:25:10.454430 score=0.33 q=Kje lahko plavamo?
+2026-01-09T07:25:10.482480 score=0.50 q=Imate bazen?
+2026-01-09T07:25:10.582806 score=0.33 q=Kje je najbližje jezero?
+2026-01-09T07:25:10.610156 score=0.33 q=Lahko grem na ribolov?
+2026-01-09T07:25:10.734804 score=0.33 q=Kje je golf igrišče?
+2026-01-09T07:25:10.763038 score=0.38 q=Ali organizirate vodene ture?
+2026-01-09T07:25:10.789853 score=0.33 q=Imate nordijsko hojo?
+2026-01-09T07:25:10.816040 score=0.33 q=Imate televizijo v sobi?
+2026-01-09T07:25:10.854394 score=0.50 q=Imate Netflix?
+2026-01-09T07:25:10.906488 score=0.33 q=Imate prostor za delo?
+2026-01-09T07:25:10.988107 score=0.25 q=Lahko napolnim električni avto?
+2026-01-09T07:25:11.013534 score=0.50 q=Imate polnilnico za EV?
+2026-01-09T07:25:11.040014 score=0.33 q=Imate halal hrano?
+2026-01-09T07:25:11.066347 score=0.50 q=Ali pripravljate košer hrano?
+2026-01-09T07:25:11.092072 score=0.33 q=Imate hrano za diabetike?
+2026-01-09T07:25:11.118092 score=0.12 q=Kaj če sem alergičen na oreščke?
+2026-01-09T07:25:11.145354 score=0.62 q=Ali imate brezalkoholno pijačo?
+2026-01-09T07:25:11.170389 score=0.50 q=Imate pivo?
+2026-01-09T07:25:11.196463 score=0.33 q=Kakšne sokove imate?
+2026-01-09T07:25:11.222351 score=0.50 q=Imate kavo?
+2026-01-09T07:25:42.704708 score=0.38 q=Kakšen izlet priporočate v bližini?
+2026-01-09T07:25:42.745273 score=0.50 q=Kako pridem v Rače?
+2026-01-09T07:25:42.838935 score=0.70 q=Lahko praznujemo obletnico pri vas?
+2026-01-09T07:25:42.861817 score=0.33 q=Imate prostor za poroko?
+2026-01-09T07:25:42.912303 score=0.33 q=Lahko pripravite pogrebščino?
+2026-01-09T07:25:43.160184 score=0.58 q=Kaj lahko otroci počnejo pri vas?
+2026-01-09T07:25:43.255484 score=0.50 q=Je varno za malčke?
+2026-01-09T07:25:43.289873 score=0.33 q=Imate posteljo za dojenčka?
+2026-01-09T07:25:43.328405 score=0.62 q=Ali imate kotiček za otroke?
+2026-01-09T07:25:43.353028 score=0.50 q=Je primerno za 3-letnika?
+2026-01-09T07:25:43.392471 score=0.33 q=Kaj počnemo če dežuje?
+2026-01-09T07:25:43.416533 score=0.33 q=Imate notranjo jedilnico?
+2026-01-09T07:25:43.455425 score=0.50 q=Kdaj je najboljši čas za obisk?
+2026-01-09T07:25:43.479199 score=0.33 q=Katera sezona je najlepša?
+2026-01-09T07:25:43.569368 score=0.62 q=Ali imate sneg pozimi?
+2026-01-09T07:25:43.621980 score=0.33 q=Lahko pridem s kolesom?
+2026-01-09T07:25:43.698435 score=0.33 q=Kako daleč je Ljubljana?
+2026-01-09T07:25:43.721977 score=0.20 q=Koliko časa traja vožnja iz Celja?
+2026-01-09T07:25:43.747239 score=0.50 q=Je primerno za motoriste?
+2026-01-09T07:25:43.773052 score=0.33 q=Imate romantično sobo?
+2026-01-09T07:25:43.849143 score=0.67 q=Je primerno za medene tedne?
+2026-01-09T07:25:43.873587 score=0.25 q=Lahko dobim sobo s pogledom?
+2026-01-09T07:25:43.925331 score=0.50 q=Imate masažo?
+2026-01-09T07:25:43.950520 score=0.17 q=Kaj priporočate za parček?
+2026-01-09T07:25:44.148490 score=0.33 q=Kje lahko plavamo?
+2026-01-09T07:25:44.251873 score=0.33 q=Imate nordijsko hojo?
+2026-01-09T07:25:44.464820 score=0.33 q=Kakšne sokove imate?
+2026-01-09T07:25:44.486960 score=0.50 q=Imate kavo?
+2026-01-09T14:52:56.239095 score=0.38 q=Kakšen izlet priporočate v bližini?
+2026-01-09T14:52:56.279173 score=0.50 q=Kako pridem v Rače?
+2026-01-09T14:52:56.369809 score=0.70 q=Lahko praznujemo obletnico pri vas?
+2026-01-09T14:52:56.393590 score=0.33 q=Imate prostor za poroko?
+2026-01-09T14:52:56.446160 score=0.33 q=Lahko pripravite pogrebščino?
+2026-01-09T14:52:56.685750 score=0.58 q=Kaj lahko otroci počnejo pri vas?
+2026-01-09T14:52:56.779013 score=0.50 q=Je varno za malčke?
+2026-01-09T14:52:56.816099 score=0.33 q=Imate posteljo za dojenčka?
+2026-01-09T14:52:56.853128 score=0.62 q=Ali imate kotiček za otroke?
+2026-01-09T14:52:56.877719 score=0.50 q=Je primerno za 3-letnika?
+2026-01-09T14:52:56.916329 score=0.33 q=Kaj počnemo če dežuje?
+2026-01-09T14:52:56.939826 score=0.33 q=Imate notranjo jedilnico?
+2026-01-09T14:52:56.977978 score=0.50 q=Kdaj je najboljši čas za obisk?
+2026-01-09T14:52:57.001836 score=0.33 q=Katera sezona je najlepša?
+2026-01-09T14:52:57.087081 score=0.62 q=Ali imate sneg pozimi?
+2026-01-09T14:52:57.138157 score=0.33 q=Lahko pridem s kolesom?
+2026-01-09T14:52:57.217060 score=0.33 q=Kako daleč je Ljubljana?
+2026-01-09T14:52:57.239850 score=0.20 q=Koliko časa traja vožnja iz Celja?
+2026-01-09T14:52:57.265163 score=0.50 q=Je primerno za motoriste?
+2026-01-09T14:52:57.288609 score=0.33 q=Imate romantično sobo?
+2026-01-09T14:52:57.362764 score=0.67 q=Je primerno za medene tedne?
+2026-01-09T14:52:57.388297 score=0.25 q=Lahko dobim sobo s pogledom?
+2026-01-09T14:52:57.440869 score=0.50 q=Imate masažo?
+2026-01-09T14:52:57.465616 score=0.17 q=Kaj priporočate za parček?
+2026-01-09T14:52:57.658484 score=0.33 q=Kje lahko plavamo?
+2026-01-09T14:52:57.768444 score=0.33 q=Imate nordijsko hojo?
+2026-01-09T14:52:57.998469 score=0.33 q=Kakšne sokove imate?
+2026-01-09T14:52:58.023105 score=0.50 q=Imate kavo?
+2026-01-09T20:04:49.532201 score=2.25 overlap=0 ratio=0.00 q=Imate konje?
+2026-01-09T20:04:49.546193 score=1.83 overlap=0 ratio=0.00 q=Ali lahko jahamo?
+2026-01-09T20:04:50.734215 score=0.38 q=Kakšen izlet priporočate v bližini?
+2026-01-09T20:04:50.778488 score=0.50 q=Kako pridem v Rače?
+2026-01-09T20:04:50.884759 score=0.70 q=Lahko praznujemo obletnico pri vas?
+2026-01-09T20:04:50.910890 score=0.33 q=Imate prostor za poroko?
+2026-01-09T20:04:50.964448 score=0.33 q=Lahko pripravite pogrebščino?
+2026-01-09T20:04:51.219416 score=0.58 q=Kaj lahko otroci počnejo pri vas?
+2026-01-09T20:04:51.315279 score=0.50 q=Je varno za malčke?
+2026-01-09T20:04:51.353688 score=0.33 q=Imate posteljo za dojenčka?
+2026-01-09T20:04:51.394014 score=0.62 q=Ali imate kotiček za otroke?
+2026-01-09T20:04:51.419101 score=0.50 q=Je primerno za 3-letnika?
+2026-01-09T20:04:51.458394 score=0.33 q=Kaj počnemo če dežuje?
+2026-01-09T20:04:51.481237 score=0.33 q=Imate notranjo jedilnico?
+2026-01-09T20:04:51.518410 score=0.50 q=Kdaj je najboljši čas za obisk?
+2026-01-09T20:04:51.543411 score=0.33 q=Katera sezona je najlepša?
+2026-01-09T20:04:51.613402 score=0.75 overlap=0 ratio=0.00 q=Kako je jeseni pri vas?
+2026-01-09T20:04:51.636908 score=0.62 q=Ali imate sneg pozimi?
+2026-01-09T20:04:51.690297 score=0.33 q=Lahko pridem s kolesom?
+2026-01-09T20:04:51.769488 score=0.33 q=Kako daleč je Ljubljana?
+2026-01-09T20:04:51.796226 score=0.20 q=Koliko časa traja vožnja iz Celja?
+2026-01-09T20:04:51.822715 score=0.50 q=Je primerno za motoriste?
+2026-01-09T20:04:51.846530 score=0.33 q=Imate romantično sobo?
+2026-01-09T20:04:51.926755 score=0.67 q=Je primerno za medene tedne?
+2026-01-09T20:04:51.952731 score=0.25 q=Lahko dobim sobo s pogledom?
+2026-01-09T20:04:52.009095 score=0.50 q=Imate masažo?
+2026-01-09T20:04:52.034558 score=0.17 q=Kaj priporočate za parček?
+2026-01-09T20:04:52.225451 score=0.33 q=Kje lahko plavamo?
+2026-01-09T20:04:52.332419 score=0.67 q=Imate nordijsko hojo?
+2026-01-09T20:04:52.356977 score=0.33 q=Imate televizijo v sobi?
+2026-01-09T20:04:52.490699 score=0.50 q=Imate polnilnico za EV?
+2026-01-09T20:04:52.595913 score=0.33 q=Kakšne sokove imate?
+2026-01-09T20:04:52.618210 score=0.50 q=Imate kavo?

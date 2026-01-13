@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Urška AI – Playground</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f3f4f6;
+      color: #111827;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: #e5e7eb;
+    }
+
+    .app {
+      max-width: 900px;
+      margin: 24px auto;
+      padding: 16px;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .title {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      color: #6b7280;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+      white-space: nowrap;
+    }
+
+    .messages {
+      border-radius: 14px;
+      background: #f9fafb;
+      padding: 12px;
+      max-height: 420px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .msg {
+      max-width: 80%;
+      border-radius: 12px;
+      padding: 8px 11px;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .msg.user {
+      margin-left: auto;
+      background: #dbeafe;
+      color: #111827;
+      border-bottom-right-radius: 4px;
+    }
+
+    .msg.bot {
+      margin-right: auto;
+      background: #111827;
+      color: #f9fafb;
+      border-bottom-left-radius: 4px;
+    }
+
+    .msg.meta {
+      margin: 0 auto;
+      background: transparent;
+      color: #9ca3af;
+      font-size: 0.75rem;
+      padding: 0;
+    }
+
+    .input-row {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .input-main {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+    }
+
+    textarea {
+      flex: 1;
+      min-height: 60px;
+      max-height: 160px;
+      resize: vertical;
+      border-radius: 12px;
+      border: 1px solid #d1d5db;
+      padding: 8px 10px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      box-sizing: border-box;
+    }
+
+    textarea:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 1px #2563eb20;
+    }
+
+    button {
+      border-radius: 999px;
+      border: none;
+      padding: 9px 18px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: #2563eb;
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+
+    .hint-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-size: 0.75rem;
+      color: #6b7280;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .quick-prompts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .chip {
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      font-size: 0.75rem;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+
+    .chip:hover {
+      border-color: #9ca3af;
+      background: #f3f4f6;
+    }
+
+    .status {
+      font-size: 0.75rem;
+      color: #9ca3af;
+      text-align: right;
+    }
+
+    @media (max-width: 640px) {
+      .card {
+        padding: 14px;
+      }
+
+      .title {
+        font-size: 1.05rem;
+      }
+
+      .messages {
+        max-height: 320px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="card">
+      <div class="header">
+        <div>
+          <div class="title">Urška AI – Testni chat</div>
+          <div class="subtitle">
+            Tukaj testiraš vse: vprašanja o hrani, sobah, izletih, trgovini in rezervacijah.
+          </div>
+        </div>
+        <div class="badge">DEV playground</div>
+      </div>
+
+      <div id="messages" class="messages">
+        <div class="msg bot">
+          Pozdravljen! Tukaj lahko testiraš Urška AI asistenta. 😊
+          <br /><br />
+          Poskusi kaj izmed tega:
+          <br />• "Kaj ponujate za vikend kosila?"
+          <br />• "Koliko nočitev najmanj moram rezervirati julija?"
+          <br />• "Imate suho salamo ali pohorsko bunko?"
+          <br />• "Rad bi rezerviral sobo za vikend."
+        </div>
+      </div>
+
+      <div class="input-row">
+        <div class="input-main">
+          <textarea
+            id="input"
+            placeholder="Napiši vprašanje ali npr. 'Rad bi rezerviral sobo za vikend.'"
+          ></textarea>
+          <button id="sendBtn">
+            Pošlji
+          </button>
+        </div>
+        <div class="hint-row">
+          <div class="quick-prompts">
+            <span class="chip" data-prompt="Kaj ponujate na kmetiji?">Naša ponudba</span>
+            <span class="chip" data-prompt="Koliko nočitev najmanj moram rezervirati julija?">Min. nočitve</span>
+            <span class="chip" data-prompt="Imate kakšno suho salamo ali pohorsko bunko?">Trgovina</span>
+            <span class="chip" data-prompt="Rad bi rezerviral sobo za vikend.">Rezervacija sobe</span>
+          </div>
+          <div class="status" id="status">
+            Enter = pošlji, Shift+Enter = nova vrstica
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const apiUrl = "/chat"; // isti host, isti port
+    const messagesEl = document.getElementById("messages");
+    const inputEl = document.getElementById("input");
+    const sendBtn = document.getElementById("sendBtn");
+    const statusEl = document.getElementById("status");
+
+    function addMessage(text, who = "bot") {
+      const div = document.createElement("div");
+      div.className = "msg " + who;
+      div.textContent = text;
+      messagesEl.appendChild(div);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    async function sendMessage() {
+      const text = inputEl.value.trim();
+      if (!text) return;
+
+      addMessage(text, "user");
+      inputEl.value = "";
+      inputEl.focus();
+
+      sendBtn.disabled = true;
+      statusEl.textContent = "Pošiljam zahtevo na /chat ...";
+
+      try {
+        const res = await fetch(apiUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ message: text })
+        });
+
+        if (!res.ok) {
+          addMessage("Napaka pri klicu /chat (status " + res.status + ")", "bot");
+          statusEl.textContent = "Napaka pri klicu /chat.";
+        } else {
+          const data = await res.json();
+          addMessage(data.reply ?? "[Prazen odgovor]", "bot");
+          statusEl.textContent = "OK – odgovor prejet.";
+        }
+      } catch (err) {
+        console.error(err);
+        addMessage("Prišlo je do napake pri povezavi s strežnikom.", "bot");
+        statusEl.textContent = "Napaka pri povezavi.";
+      } finally {
+        sendBtn.disabled = false;
+      }
+    }
+
+    sendBtn.addEventListener("click", () => {
+      sendMessage();
+    });
+
+    inputEl.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    document.querySelectorAll(".chip").forEach((chip) => {
+      chip.addEventListener("click", () => {
+        const prompt = chip.getAttribute("data-prompt");
+        inputEl.value = prompt;
+        inputEl.focus();
+      });
+    });
+  </script>
+</body>
+</html>

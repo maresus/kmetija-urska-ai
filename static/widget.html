@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Urška AI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap');
+    :root {
+      --bg: #faf8f5;
+      --card: #fffaf3;
+      --text: #2f302b;
+      --muted: #6b5f4e;
+      --border: #e4dfd7;
+      --green: #2d3e2f;
+      --accent: #c19a6b;
+      --bot-bg: #f1ece4;
+      --user-bg: #ffffff;
+      --bot-text: #2f302b;
+    }
+    html, body {
+      height: 100%;
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+    }
+    .container { display: flex; flex-direction: column; height: 100%; }
+    .header {
+      padding: 14px 16px;
+      background: var(--card);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .header-icon {
+      width: 36px; height: 36px;
+      background: #e5f3ea;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .header-text h1 { font-size: 1rem; font-weight: 600; margin-bottom: 2px; }
+    .header-text p { font-size: 0.75rem; color: var(--muted); }
+    .header-actions { margin-left: auto; display: flex; gap: 8px; }
+    .clear-btn {
+      background: var(--green);
+      border: none;
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      cursor: pointer;
+    }
+    .clear-btn.secondary {
+      background: #f1ede5;
+      color: #4b3a28;
+    }
+    .clear-btn:hover { filter: brightness(0.95); }
+    .messages {
+      flex: 1; overflow-y: auto; padding: 16px;
+      background: #fff;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .msg {
+      max-width: 85%; padding: 10px 14px; border-radius: 16px;
+      font-size: 0.9rem; line-height: 1.45;
+      white-space: pre-wrap; word-wrap: break-word;
+    }
+    .msg.user {
+      margin-left: auto; background: var(--user-bg);
+      color: var(--text); border: 1px solid var(--border);
+      border-bottom-right-radius: 4px;
+    }
+    .msg.bot {
+      margin-right: auto; background: var(--bot-bg);
+      color: var(--text); border-bottom-left-radius: 4px;
+    }
+    .msg.typing { background: var(--bot-bg); color: var(--bot-text); padding: 12px 18px; }
+    .typing-dots { display: flex; gap: 4px; }
+    .typing-dots span {
+      width: 8px; height: 8px; background: var(--bot-text);
+      border-radius: 50%; animation: bounce 1.4s infinite ease-in-out;
+    }
+    .typing-dots span:nth-child(1) { animation-delay: 0s; }
+    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce {
+      0%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-6px); }
+    }
+    .quick-btns {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      padding: 0 16px 12px; background: #fff;
+    }
+    .quick-btn {
+      padding: 6px 12px; border-radius: 20px;
+      background: #fff; border: 1px solid var(--border);
+      font-size: 0.8rem; cursor: pointer; transition: all 0.15s;
+    }
+    .quick-btn:hover {
+      background: #fff5e6; color: var(--text); border-color: var(--accent);
+    }
+    .input-area {
+      padding: 12px 16px; background: var(--card);
+      border-top: 1px solid var(--border);
+      display: flex; gap: 10px; align-items: flex-end; flex-shrink: 0;
+    }
+    .input-area textarea {
+      flex: 1; min-height: 42px; max-height: 100px;
+      padding: 10px 14px; border: 1px solid var(--border);
+      border-radius: 16px; font-family: inherit; font-size: 0.9rem;
+      resize: none; outline: none; line-height: 1.4;
+    }
+    .input-area textarea:focus { border-color: var(--accent); }
+    .input-area button {
+      width: 42px; height: 42px; border-radius: 50%;
+      border: none; background: var(--green); color: white;
+      cursor: pointer; display: flex; align-items: center;
+      justify-content: center; transition: background 0.15s; flex-shrink: 0;
+    }
+    .input-area button:hover { filter: brightness(0.95); }
+    .input-area button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .input-area button svg { width: 20px; height: 20px; fill: currentColor; }
+    .powered {
+      padding: 8px; text-align: center; font-size: 0.7rem;
+      color: var(--muted); background: var(--bg);
+    }
+    .powered a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="header-icon">🏡</div>
+      <div class="header-text">
+        <h1>Turistična kmetija Urška</h1>
+        <p>Vprašajte me karkoli o kmetiji</p>
+      </div>
+      <div class="header-actions">
+        <button class="clear-btn" id="clearBtn" title="Počisti zgodovino">Urška – pomoč</button>
+        <button class="clear-btn secondary" id="newSessionBtn" title="Nova seja">Nova seja</button>
+      </div>
+    </div>
+    <div class="messages" id="messages"></div>
+    <div class="quick-btns" id="quickBtns">
+      <button class="quick-btn" data-msg="Kaj ponujate na kmetiji?">Naša ponudba</button>
+      <button class="quick-btn" data-msg="Kaj prodajate v spletni trgovini?">Trgovina</button>
+      <button class="quick-btn" data-msg="Rad bi rezerviral sobo.">Rezervacija sobe</button>
+      <button class="quick-btn" data-msg="Rad bi rezerviral mizo.">Rezervacija mize</button>
+    </div>
+    <div class="input-area">
+      <textarea id="input" placeholder="Napišite sporočilo..." rows="1"></textarea>
+      <button id="sendBtn" aria-label="Pošlji">
+        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
+    </div>
+    <div class="powered">Ustvaril <a href="https://kmetija-urska.si" target="_blank">Turistična kmetija Urška</a></div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'urska_chat_history';
+    const MAX_MESSAGES = 50;
+    
+    const messagesEl = document.getElementById('messages');
+    const inputEl = document.getElementById('input');
+    const sendBtn = document.getElementById('sendBtn');
+    const quickBtns = document.getElementById('quickBtns');
+    const clearBtn = document.getElementById('clearBtn');
+    const newSessionBtn = document.getElementById('newSessionBtn');
+    
+    // Load history from localStorage
+    function loadHistory() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const messages = JSON.parse(saved);
+          if (messages.length > 0) {
+            messages.forEach(m => addMessageToDOM(m.text, m.who, false));
+            quickBtns.style.display = 'none';
+            return true;
+          }
+        }
+      } catch (e) { console.error('Error loading history:', e); }
+      return false;
+    }
+    
+    // Save history to localStorage
+    function saveHistory() {
+      try {
+        const messages = [];
+        document.querySelectorAll('.msg:not(.typing)').forEach(el => {
+          messages.push({
+            text: el.textContent,
+            who: el.classList.contains('user') ? 'user' : 'bot'
+          });
+        });
+        // Keep only last MAX_MESSAGES
+        const toSave = messages.slice(-MAX_MESSAGES);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+      } catch (e) { console.error('Error saving history:', e); }
+    }
+    
+    // Clear history
+    function clearHistory() {
+      localStorage.removeItem(STORAGE_KEY);
+      messagesEl.innerHTML = '';
+      addMessageToDOM('Pozdravljeni! 👋 Kako vam lahko pomagam?\n\nVprašajte me o:\n• Sobah in nastanitvah\n• Vikend kosilih\n• Naših izdelkih\n• Izletih v okolici', 'bot', false);
+      quickBtns.style.display = 'flex';
+    }
+    
+    function addMessageToDOM(text, who, save = true) {
+      const div = document.createElement('div');
+      div.className = 'msg ' + who;
+      div.textContent = text;
+      messagesEl.appendChild(div);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      if (save) saveHistory();
+      return div;
+    }
+    
+    function showTyping() {
+      const div = document.createElement('div');
+      div.className = 'msg bot typing';
+      div.id = 'typing';
+      div.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
+      messagesEl.appendChild(div);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+    
+    function hideTyping() {
+      const el = document.getElementById('typing');
+      if (el) el.remove();
+    }
+    
+    const sessionKey = 'chat_session_id';
+    let sessionId = localStorage.getItem(sessionKey);
+    if (!sessionId) {
+      sessionId = (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now());
+      localStorage.setItem(sessionKey, sessionId);
+    }
+
+    function resetSession() {
+      localStorage.removeItem(sessionKey);
+      sessionId = (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now());
+      localStorage.setItem(sessionKey, sessionId);
+    }
+
+    async function sendMessage(text) {
+      if (!text.trim()) return;
+      addMessageToDOM(text, 'user');
+      inputEl.value = '';
+      inputEl.style.height = 'auto';
+      sendBtn.disabled = true;
+      quickBtns.style.display = 'none';
+      showTyping();
+      try {
+        const res = await fetch('/chat/stream', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: text, session_id: sessionId })
+      });
+        hideTyping();
+        if (res.ok) {
+          if (!res.body) {
+            const data = await res.json();
+            addMessageToDOM(data.reply || 'Oprostite, prišlo je do napake.', 'bot');
+          } else {
+            const botEl = addMessageToDOM('', 'bot');
+            const reader = res.body.getReader();
+            const decoder = new TextDecoder();
+            while (true) {
+              const { value, done } = await reader.read();
+              if (done) break;
+              const chunk = decoder.decode(value, { stream: true });
+              botEl.textContent += chunk;
+              messagesEl.scrollTop = messagesEl.scrollHeight;
+            }
+            saveHistory();
+          }
+        } else {
+          addMessageToDOM('Oprostite, strežnik ni dosegljiv.', 'bot');
+        }
+      } catch (err) {
+        hideTyping();
+        addMessageToDOM('Oprostite, prišlo je do napake pri povezavi.', 'bot');
+      }
+      sendBtn.disabled = false;
+      inputEl.focus();
+    }
+    
+    // Event listeners
+    sendBtn.addEventListener('click', () => sendMessage(inputEl.value));
+    clearBtn.addEventListener('click', clearHistory);
+    newSessionBtn.addEventListener('click', () => {
+      clearHistory();
+      resetSession();
+    });
+    
+    inputEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage(inputEl.value);
+      }
+    });
+    
+    inputEl.addEventListener('input', () => {
+      inputEl.style.height = 'auto';
+      inputEl.style.height = Math.min(inputEl.scrollHeight, 100) + 'px';
+    });
+    
+    document.querySelectorAll('.quick-btn').forEach(btn => {
+      btn.addEventListener('click', () => { sendMessage(btn.dataset.msg); });
+    });
+    
+    // Initialize
+    const hasHistory = loadHistory();
+    if (!hasHistory) {
+      addMessageToDOM('Pozdravljeni! 👋 Kako vam lahko pomagam?\n\nVprašajte me o:\n• Sobah in nastanitvah\n• Vikend kosilih\n• Naših izdelkih\n• Izletih v okolici', 'bot', false);
+    }
+  </script>
+</body>
+</html>
