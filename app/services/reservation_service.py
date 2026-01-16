@@ -6,46 +6,72 @@ from collections import defaultdict
 from datetime import datetime, timedelta
 from typing import Any, Dict, Optional, Tuple
 
-import psycopg2
-from psycopg2.extras import RealDictCursor
+try:
+    import psycopg2
+    from psycopg2.extras import RealDictCursor
+    HAS_POSTGRES = True
+except ImportError:
+    HAS_POSTGRES = False
 
 from app.models.reservation import ReservationRecord
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
+# Kmetija Urška - 5 dvoposteljnih sob + 2 družinska suita
 ROOMS = [
-    {"id": "ALJAZ", "name": "Soba ALJAŽ - Soba z balkonom (2 + 2)", "capacity": 4},
-    {
-        "id": "JULIJA",
-        "name": "Soba JULIJA - Družinska soba z balkonom (2 odrasla + 2 otroka)",
-        "capacity": 4,
-    },
-    {
-        "id": "ANA",
-        "name": "Soba ANA - Družinska soba z dvema spalnicama (2 odrasla + 2 otroka)",
-        "capacity": 4,
-    },
+    {"id": "MARIJA", "name": "Soba MARIJA", "capacity": 2},
+    {"id": "TINKARA", "name": "Soba TINKARA", "capacity": 2},
+    {"id": "CILKA", "name": "Soba CILKA", "capacity": 2},
+    {"id": "HANA", "name": "Soba HANA", "capacity": 2},
+    {"id": "MANCA", "name": "Soba MANCA (prilagojena invalidom)", "capacity": 2},
+    {"id": "URSKA_SUITE", "name": "Družinska suita URŠKA (z mini kuhinjico)", "capacity": 4},
+    {"id": "ANA_SUITE", "name": "Družinska suita ANA (z mini kuhinjico)", "capacity": 4},
 ]
 ROOM_NAME_MAP = {
-    "aljaž": "ALJAZ",
-    "aljaz": "ALJAZ",
-    "jULIJA".lower(): "JULIJA",
-    "julija": "JULIJA",
-    "ana": "ANA",
+    "marija": "MARIJA",
+    "tinkara": "TINKARA",
+    "cilka": "CILKA",
+    "hana": "HANA",
+    "manca": "MANCA",
+    "urška": "URSKA_SUITE",
+    "urska": "URSKA_SUITE",
+    "ana": "ANA_SUITE",
 }
 
-DINING_ROOMS = [
-    {"id": "PRI_PECI", "name": "Jedilnica Pri peči", "capacity": 15},
-    {"id": "PRI_VRTU", "name": "Jedilnica Pri vrtu", "capacity": 35},
-]
-TOTAL_TABLE_CAPACITY = sum(r["capacity"] for r in DINING_ROOMS)
+# Kmetija Urška nima jedilnic za zunanje goste (samo za nastanjene)
+# Degustacijska kosila/večerje so do 20 oseb (po naročilu)
+MAX_MEAL_CAPACITY = 20
 MAX_NIGHTS = 30
 
-ROOM_CLOSED_DAYS = {0, 1}  # pon, tor
-TABLE_OPEN_DAYS = {5, 6}  # sob, ned
-LAST_LUNCH_ARRIVAL_HOUR = 15
+# Kmetija Urška obratuje:
+# Petek: 15-20h (po dogovoru)
+# Sobota: 12-20h (po dogovoru)
+# Ostali dnevi: po dogovoru
+# Za nastanjene: 24/7
+ROOM_CLOSED_DAYS = set()  # Odprto vse dni po dogovoru
+MEAL_DAYS = {4, 5, 6}  # pet, sob, ned (glavni dnevi)
 OPENING_START_HOUR = 12
 OPENING_END_HOUR = 20
+
+# Wellness: Hiša dobrega počutja
+WELLNESS_PRICE_PER_2H = 30  # €/2h/oseba
+WELLNESS_AVAILABLE_HOURS = list(range(10, 20))  # 10:00 - 20:00
+
+# Paketi
+PACKAGES = {
+    "eko_vikend": {"name": "Eko vikend razvajanja", "price": 199, "nights": 2},
+    "dusa_telo": {"name": "Vikend za dušo in telo", "price": 225, "nights": 2},
+    "urskin": {"name": "Urškin vikend", "price": 215, "nights": 2},
+    "enodnevni": {"name": "Enodnevni pobeg", "price": 150, "nights": 1},
+    "druzinski": {"name": "Družinski paket (7 noči)", "price": 734, "nights": 7},
+}
+
+# Accommodation types
+ACCOMMODATION_PRICES = {
+    "zajtrk": 72,  # Nočitev z zajtrkom
+    "polpenzion": 87,  # Zajtrk + večerja
+    "polpenzion_razširjen": 97,  # Zajtrk + kosilo + večerja + bazen (julij/avg)
+}
 
 
 class ReservationService:
@@ -55,8 +81,8 @@ class ReservationService:
         self.backup_dir = os.path.join(project_root, "backups")
         os.makedirs(self.backup_dir, exist_ok=True)
 
-        # Če ni DATABASE_URL, uporabimo SQLite (lokalni razvoj)
-        self.use_postgres = bool(DATABASE_URL)
+        # Če ni DATABASE_URL ali psycopg2, uporabimo SQLite (lokalni razvoj)
+        self.use_postgres = bool(DATABASE_URL and HAS_POSTGRES)
         if not self.use_postgres:
             self.data_dir = os.path.join(project_root, "data")
             os.makedirs(self.data_dir, exist_ok=True)
@@ -93,6 +119,13 @@ class ReservationService:
             ("confirm_via", "TEXT"),
             ("event_type", "TEXT"),
             ("special_needs", "TEXT"),
+            # Urška-specific fields
+            ("wellness_duration_hours", "INTEGER"),
+            ("meal_type", "TEXT"),
+            ("package_type", "TEXT"),
+            ("package_price", "REAL"),
+            ("room_preference", "TEXT"),
+            ("accommodation_type", "TEXT"),
         ]
 
         if self.use_postgres:
@@ -127,7 +160,13 @@ class ReservationService:
                         kids_small TEXT,
                         confirm_via TEXT,
                         event_type TEXT,
-                        special_needs TEXT
+                        special_needs TEXT,
+                        wellness_duration_hours INTEGER,
+                        meal_type TEXT,
+                        package_type TEXT,
+                        package_price REAL,
+                        room_preference TEXT,
+                        accommodation_type TEXT
                     )
                     """
                 )
@@ -204,7 +243,13 @@ class ReservationService:
                     kids_small TEXT,
                     confirm_via TEXT,
                     event_type TEXT,
-                    special_needs TEXT
+                    special_needs TEXT,
+                    wellness_duration_hours INTEGER,
+                    meal_type TEXT,
+                    package_type TEXT,
+                    package_price REAL,
+                    room_preference TEXT,
+                    accommodation_type TEXT
                 )
                 """
             )
@@ -429,6 +474,7 @@ class ReservationService:
 
     # --- availability ----------------------------------------------------
     def validate_room_rules(self, arrival_str: str, nights: int) -> Tuple[bool, str]:
+        """Kmetija Urška: Odprto vse dni, minimalno 2 noči (razen julij/avg = 5 noči)"""
         arrival = self._parse_date(arrival_str)
         if not arrival:
             return False, "Tega datuma ne razumem. Prosimo uporabite obliko DD.MM.YYYY (npr. 12.7.2025)."
@@ -436,23 +482,20 @@ class ReservationService:
         if arrival.date() < today:
             today_str = today.strftime("%d.%m.%Y")
             return False, f"Ta datum je že mimo (danes je {today_str}). Prosimo izberite datum v prihodnosti."
-        if arrival.weekday() in ROOM_CLOSED_DAYS:
-            return (
-                False,
-                "Sobe so ob ponedeljkih in torkih zaprte, bivanje je možno od srede do nedelje. Prosimo izberite drug datum prihoda.",
-            )
-        if nights <= 1:
-            return False, "Rezervacija ene nočitve pri nas ni možna. Prosimo izberite več nočitev."
+        # Kmetija Urška je odprta vse dni (ni zaprtih dni)
+        if nights < 1:
+            return False, "Prosimo izberite vsaj eno nočitev."
         if nights > MAX_NIGHTS:
             return False, f"Maksimalno število nočitev v eni rezervaciji je {MAX_NIGHTS}. Prosimo izberite manj dni."
-        min_nights = self._room_min_nights(arrival)
+        # Minimalno bivanje: julij/avg = 5 noči, ostalo = 2 noči
+        min_nights = 5 if arrival.month in {7, 8} else 2
         if nights < min_nights:
-            if arrival.month in {6, 7, 8}:
+            if arrival.month in {7, 8}:
                 return (
                     False,
-                    "V juniju, juliju in avgustu je minimalno 3 nočitve. Prosimo izberite vsaj 3 nočitve.",
+                    "V juliju in avgustu je minimalno bivanje 5 noči. Prosimo izberite vsaj 5 nočitev.",
                 )
-            return False, "V tem terminu je minimalno 2 nočitvi. Prosimo izberite vsaj 2 nočitvi."
+            return False, "Minimalno bivanje je 2 noči. Prosimo izberite vsaj 2 nočitvi."
         return True, ""
 
     def check_room_availability(
@@ -607,6 +650,13 @@ class ReservationService:
         confirm_via: Optional[str] = None,
         event_type: Optional[str] = None,
         special_needs: Optional[str] = None,
+        # Urška-specific parameters
+        wellness_duration_hours: Optional[int] = None,
+        meal_type: Optional[str] = None,
+        package_type: Optional[str] = None,
+        package_price: Optional[float] = None,
+        room_preference: Optional[str] = None,
+        accommodation_type: Optional[str] = None,
     ) -> int:
         created_at = datetime.now().isoformat()
         # Admin / telefon / API vnosi se avtomatsko potrdijo
@@ -614,11 +664,12 @@ class ReservationService:
             status = "confirmed"
         conn = self._conn()
         ph = self._placeholder()
-        placeholders = ", ".join([ph] * 24)
+        placeholders = ", ".join([ph] * 30)  # Changed from 24 to 30
         sql = (
             f"INSERT INTO reservations "
             f"(date, nights, rooms, people, reservation_type, time, location, name, phone, email, note, status, created_at, source, "
-            f"admin_notes, confirmed_at, confirmed_by, guest_message, country, kids, kids_small, confirm_via, event_type, special_needs) "
+            f"admin_notes, confirmed_at, confirmed_by, guest_message, country, kids, kids_small, confirm_via, event_type, special_needs, "
+            f"wellness_duration_hours, meal_type, package_type, package_price, room_preference, accommodation_type) "
             f"VALUES ({placeholders})"
         )
         if self.use_postgres:
@@ -652,6 +703,12 @@ class ReservationService:
                     confirm_via,
                     event_type,
                     special_needs,
+                    wellness_duration_hours,
+                    meal_type,
+                    package_type,
+                    package_price,
+                    room_preference,
+                    accommodation_type,
                 ),
             )
             if self.use_postgres:
@@ -751,6 +808,13 @@ class ReservationService:
             "confirm_via",
             "event_type",
             "special_needs",
+            # Urška-specific fields
+            "wellness_duration_hours",
+            "meal_type",
+            "package_type",
+            "package_price",
+            "room_preference",
+            "accommodation_type",
         }
         updates = {k: v for k, v in fields.items() if k in allowed_fields and v is not None}
         if not updates:
