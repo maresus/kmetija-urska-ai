@@ -40,6 +40,8 @@ ROOM_NAME_MAP = {
 
 # Kmetija Urška nima jedilnic za zunanje goste (samo za nastanjene)
 # Degustacijska kosila/večerje so do 20 oseb (po naročilu)
+DINING_ROOMS = []  # Urška nima jedilnic za zunanje goste
+TOTAL_TABLE_CAPACITY = 0  # Urška nima jedilnic za zunanje goste
 MAX_MEAL_CAPACITY = 20
 MAX_NIGHTS = 30
 

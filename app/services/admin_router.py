@@ -12,7 +12,7 @@ from app.services.email_service import (
     send_reservation_confirmed,
     send_reservation_rejected,
 )
-from app.services.reservation_service import ROOMS, TOTAL_TABLE_CAPACITY, ReservationService
+from app.services.reservation_service import ROOMS, ReservationService
 
 router = APIRouter(tags=["admin"])
 service = ReservationService()
@@ -514,7 +514,7 @@ def calendar_tables(month: int, year: int):
         except Exception:
             people = 0
         entry = calendar.setdefault(
-            iso, {"total_people": 0, "capacity": TOTAL_TABLE_CAPACITY, "reservations": []}
+            iso, {"total_people": 0, "capacity": 0, "reservations": []}  # Urška nima jedilnic za zunanje goste
         )
         entry["total_people"] += people
         entry["reservations"].append(
