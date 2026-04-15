@@ -3,299 +3,464 @@
 <head>
   <meta charset="UTF-8" />
   <title>Kmetija Urška AI</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap');
     :root {
-      --bg: #f5f9f5;
-      --card: #eef5ee;
-      --text: #1a2e1a;
-      --muted: #4a6b4a;
-      --border: #c8dfc8;
-      --green: #2d5a2d;
-      --accent: #5a9a3a;
-      --bot-bg: #e4f0e4;
-      --user-bg: #ffffff;
-      --bot-text: #1a2e1a;
+      --dark:        #1a3320;
+      --mid:         #2d5a30;
+      --accent:      #6dbf6a;
+      --accent-glow: rgba(109,191,106,0.25);
+      --bg:          #0f2212;
+      --border:      rgba(255,255,255,0.1);
+      --bot-msg:     rgba(255,255,255,0.06);
+      --text:        #ffffff;
+      --text-muted:  rgba(255,255,255,0.55);
+      --app-vh: 100vh;
+      font-family: 'Inter', system-ui, sans-serif;
     }
-    html, body {
-      height: 100%;
-      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      overflow: hidden;
+    html, body { height: 100%; overflow: hidden; background: var(--bg); }
+    .chat-wrap { display: flex; flex-direction: column; height: 100vh; height: var(--app-vh); overflow: hidden; }
+    .header { background: linear-gradient(135deg, var(--dark), var(--mid)); padding: 14px 18px; display: flex; align-items: center; gap: 12px; flex-shrink: 0; border-bottom: 1px solid var(--border); }
+    .header-icon { width: 40px; height: 40px; background: rgba(255,255,255,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+    .header-info h1 { font-size: 1rem; font-weight: 700; color: var(--text); }
+    .header-info p  { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+    .header-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+    .status-badge { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 999px; font-size: 0.75rem; color: var(--text); }
+    .status-dot { width: 7px; height: 7px; background: #4ade80; border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    .new-btn { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); color: var(--text); padding: 5px 12px; border-radius: 10px; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .new-btn:hover { background: rgba(255,255,255,0.22); }
+    .messages { flex: 1; overflow-y: auto; min-height: 0; padding: 16px; display: flex; flex-direction: column; gap: 12px; background: var(--bg); }
+    .messages::-webkit-scrollbar { width: 4px; }
+    .messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 4px; }
+    .msg { display: flex; align-items: flex-start; gap: 10px; animation: slide 0.25s ease; }
+    @keyframes slide { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+    .msg.user { flex-direction: row-reverse; }
+    .avatar { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 700; flex-shrink: 0; }
+    .msg.bot  .avatar { background: var(--accent); color: var(--dark); }
+    .msg.user .avatar { background: rgba(255,255,255,0.15); color: var(--text); border: 1px solid var(--border); }
+    .bubble { max-width: 78%; padding: 10px 14px; border-radius: 14px; font-size: 0.88rem; line-height: 1.55; word-wrap: break-word; }
+    .msg.bot  .bubble { background: var(--bot-msg); border: 1px solid var(--border); border-bottom-left-radius: 3px; color: rgba(255,255,255,0.9); }
+    .msg.user .bubble { background: var(--accent); color: var(--dark); font-weight: 500; border-bottom-right-radius: 3px; }
+    .typing-bubble { background: var(--bot-msg); border: 1px solid var(--border); border-radius: 14px; border-bottom-left-radius: 3px; padding: 12px 16px; display: flex; gap: 4px; }
+    .dot { width: 7px; height: 7px; background: var(--accent); border-radius: 50%; animation: bounce 1.4s infinite; }
+    .dot:nth-child(2){animation-delay:.2s} .dot:nth-child(3){animation-delay:.4s}
+    @keyframes bounce { 0%,60%,100%{transform:translateY(0);opacity:.4} 30%{transform:translateY(-7px);opacity:1} }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 16px 10px; background: var(--bg); }
+    .chip { padding: 5px 13px; border-radius: 999px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.8); font-size: 0.8rem; cursor: pointer; transition: all 0.18s; }
+    .chip:hover { background: var(--accent); color: var(--dark); border-color: var(--accent); }
+    .input-area { padding: 12px 16px; background: var(--dark); border-top: 1px solid var(--border); flex-shrink: 0; }
+    .input-row { display: flex; gap: 10px; align-items: flex-end; }
+    textarea { flex: 1; background: rgba(255,255,255,0.08); border: 1.5px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 10px 14px; color: var(--text); font-family: inherit; font-size: 0.9rem; resize: none; outline: none; min-height: 44px; max-height: 120px; line-height: 1.4; }
+    textarea::placeholder { color: var(--text-muted); }
+    textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+    .send-btn { background: var(--accent); color: var(--dark); border: none; border-radius: 12px; padding: 10px 18px; font-size: 0.9rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px var(--accent-glow); transition: all 0.2s; height: 44px; flex-shrink: 0; }
+    .send-btn:hover:not(:disabled) { transform: translateY(-1px); }
+    .send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .input-hint { font-size: 0.72rem; color: var(--text-muted); text-align: center; margin-top: 7px; }
+    .welcome { background: rgba(109,191,106,0.07); border: 1px solid rgba(109,191,106,0.25); border-radius: 14px; padding: 18px; }
+    .welcome h3 { color: var(--accent); margin-bottom: 8px; font-size: 1rem; }
+    .welcome ul { list-style: none; }
+    .welcome li { padding: 4px 0; font-size: 0.88rem; color: rgba(255,255,255,0.85); }
+    .welcome li::before { content: "— "; color: var(--accent); font-weight: 700; }
+    .rezerv-bar { padding: 0 16px 10px; background: var(--dark); flex-shrink: 0; }
+    .rezerv-btn { width: 100%; padding: 9px; background: transparent; border: 2px solid var(--accent); border-radius: 10px; color: var(--accent); font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.18s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .rezerv-btn:hover { background: rgba(109,191,106,0.12); }
+    #bf-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 100; display: none; flex-direction: column; overflow: hidden; }
+    #bf-overlay.open { display: flex; }
+    #bf-header { background: linear-gradient(135deg, var(--dark), var(--mid)); padding: 14px 16px; display: flex; align-items: center; gap: 10px; flex-shrink: 0; border-bottom: 1px solid var(--border); }
+    #bf-header h2 { margin: 0; font-size: 1rem; color: var(--text); flex: 1; }
+    #bf-back { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: var(--text); padding: 5px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
+    #bf-back:hover { background: rgba(255,255,255,0.25); }
+    #bf-body { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+    .bf-tabs { display: flex; gap: 8px; }
+    .bf-tab { flex: 1; padding: 9px; border: 2px solid rgba(255,255,255,0.2); border-radius: 8px; background: transparent; color: rgba(255,255,255,0.6); font-size: 0.85rem; font-weight: 700; cursor: pointer; text-align: center; transition: all 0.15s; }
+    .bf-tab.active { border-color: var(--accent); color: var(--accent); background: rgba(109,191,106,0.1); }
+    .bf-prices { font-size: 0.75rem; color: var(--text-muted); line-height: 1.6; background: rgba(255,255,255,0.04); border-radius: 8px; padding: 8px 10px; border: 1px solid var(--border); }
+    .bf-row { display: flex; gap: 10px; }
+    .bf-field { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+    .bf-field label { font-size: 0.75rem; color: rgba(255,255,255,0.6); font-weight: 600; }
+    .bf-field input, .bf-field textarea { background: rgba(255,255,255,0.08); border: 1.5px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 9px 12px; color: var(--text); font-size: 0.9rem; outline: none; font-family: inherit; transition: border-color 0.15s; }
+    .bf-field input:focus, .bf-field textarea:focus { border-color: var(--accent); }
+    .bf-field input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); }
+    .bf-field textarea { resize: none; height: 58px; }
+    .bf-stepper { display: flex; align-items: center; height: 38px; border: 1.5px solid rgba(255,255,255,0.15); border-radius: 8px; overflow: hidden; }
+    .bf-stepper button { width: 36px; background: rgba(255,255,255,0.08); border: none; color: var(--accent); font-size: 1.1rem; font-weight: 700; cursor: pointer; height: 100%; transition: background 0.15s; }
+    .bf-stepper button:hover { background: rgba(109,191,106,0.2); }
+    .bf-stepper span { flex: 1; text-align: center; font-size: 0.95rem; font-weight: 700; color: var(--text); }
+    .bf-section { font-size: 0.7rem; font-weight: 700; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 1px; }
+    .bf-gdpr { display: flex; gap: 8px; align-items: flex-start; font-size: 0.75rem; color: var(--text-muted); line-height: 1.5; }
+    .bf-gdpr input { margin-top: 2px; flex-shrink: 0; }
+    #bf-footer { padding: 12px 16px; padding-bottom: max(12px, env(safe-area-inset-bottom)); border-top: 1px solid var(--border); background: var(--dark); flex-shrink: 0; }
+    #bf-submit { width: 100%; padding: 13px; background: var(--accent); color: var(--dark); border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 800; cursor: pointer; transition: opacity 0.15s; }
+    #bf-submit:hover { opacity: 0.9; }
+    #bf-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+    @media (max-width: 600px) {
+      .header { padding: calc(8px + env(safe-area-inset-top)) 14px 10px; }
+      .messages { padding: 12px; }
+      .input-area { padding: 10px 12px calc(10px + env(safe-area-inset-bottom)); }
+      .chips { display: none !important; }
+      .input-hint { display: none; }
+      .rezerv-bar { padding: 0 12px 10px; }
     }
-    .container { display: flex; flex-direction: column; height: 100%; }
-    .header {
-      padding: 14px 16px;
-      background: var(--green);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-shrink: 0;
-      border-bottom: 1px solid rgba(255,255,255,0.15);
-    }
-    .header-icon {
-      width: 38px; height: 38px;
-      background: rgba(255,255,255,0.2);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px;
-    }
-    .header-text h1 { font-size: 1rem; font-weight: 600; margin-bottom: 2px; color: #fff; }
-    .header-text p { font-size: 0.75rem; color: rgba(255,255,255,0.75); }
-    .header-actions { margin-left: auto; display: flex; gap: 8px; }
-    .clear-btn {
-      background: rgba(255,255,255,0.2);
-      border: 1px solid rgba(255,255,255,0.3);
-      color: #fff;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-size: 0.7rem;
-      cursor: pointer;
-    }
-    .clear-btn.secondary {
-      background: rgba(255,255,255,0.1);
-    }
-    .clear-btn:hover { background: rgba(255,255,255,0.3); }
-    .messages {
-      flex: 1; overflow-y: auto; padding: 16px;
-      background: #fff;
-      display: flex; flex-direction: column; gap: 12px;
-    }
-    .msg {
-      max-width: 85%; padding: 10px 14px; border-radius: 16px;
-      font-size: 0.9rem; line-height: 1.5;
-      white-space: pre-wrap; word-wrap: break-word;
-    }
-    .msg.user {
-      margin-left: auto; background: var(--user-bg);
-      color: var(--text); border: 1px solid var(--border);
-      border-bottom-right-radius: 4px;
-    }
-    .msg.bot {
-      margin-right: auto; background: var(--bot-bg);
-      color: var(--text); border-bottom-left-radius: 4px;
-    }
-    .msg.typing { background: var(--bot-bg); color: var(--bot-text); padding: 12px 18px; }
-    .typing-dots { display: flex; gap: 4px; }
-    .typing-dots span {
-      width: 8px; height: 8px; background: var(--accent);
-      border-radius: 50%; animation: bounce 1.4s infinite ease-in-out;
-    }
-    .typing-dots span:nth-child(1) { animation-delay: 0s; }
-    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
-    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes bounce {
-      0%, 80%, 100% { transform: translateY(0); }
-      40% { transform: translateY(-6px); }
-    }
-    .quick-btns {
-      display: flex; flex-wrap: wrap; gap: 6px;
-      padding: 10px 16px 12px; background: #fff;
-      border-top: 1px solid var(--border);
-    }
-    .quick-btn {
-      padding: 6px 12px; border-radius: 20px;
-      background: #fff; border: 1px solid var(--border);
-      font-size: 0.8rem; cursor: pointer; transition: all 0.15s;
-      color: var(--green);
-    }
-    .quick-btn:hover {
-      background: var(--card); border-color: var(--accent);
-    }
-    .input-area {
-      padding: 12px 16px; background: var(--card);
-      border-top: 1px solid var(--border);
-      display: flex; gap: 10px; align-items: flex-end; flex-shrink: 0;
-    }
-    .input-area textarea {
-      flex: 1; min-height: 42px; max-height: 100px;
-      padding: 10px 14px; border: 1px solid var(--border);
-      border-radius: 16px; font-family: inherit; font-size: 0.9rem;
-      resize: none; outline: none; line-height: 1.4;
-      background: #fff;
-    }
-    .input-area textarea:focus { border-color: var(--accent); }
-    .input-area button {
-      width: 42px; height: 42px; border-radius: 50%;
-      border: none; background: var(--green); color: white;
-      cursor: pointer; display: flex; align-items: center;
-      justify-content: center; transition: background 0.15s; flex-shrink: 0;
-    }
-    .input-area button:hover { background: var(--accent); }
-    .input-area button:disabled { opacity: 0.5; cursor: not-allowed; }
-    .input-area button svg { width: 20px; height: 20px; fill: currentColor; }
-    .powered {
-      padding: 8px; text-align: center; font-size: 0.7rem;
-      color: var(--muted); background: var(--bg);
-    }
-    .powered a { color: var(--accent); text-decoration: none; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <div class="header-icon">🌿</div>
-      <div class="header-text">
-        <h1>Kmetija Urška</h1>
-        <p>Ekološka turistična kmetija • Stranice</p>
-      </div>
-      <div class="header-actions">
-        <button class="clear-btn" id="clearBtn" title="Počisti pogovor">Počisti</button>
-        <button class="clear-btn secondary" id="newSessionBtn" title="Nova seja">Nova seja</button>
-      </div>
+<div class="chat-wrap">
+  <div class="header">
+    <div class="header-icon">🌿</div>
+    <div class="header-info">
+      <h1>Kmetija Urška</h1>
+      <p>Ekološka turistična kmetija • Stranice</p>
     </div>
-    <div class="messages" id="messages"></div>
-    <div class="quick-btns" id="quickBtns">
-      <button class="quick-btn" data-msg="Kaj ponujate na kmetiji?">🏡 Ponudba</button>
-      <button class="quick-btn" data-msg="Kakšne so cene nastanitve?">💶 Cene</button>
-      <button class="quick-btn" data-msg="Rad bi rezerviral sobo.">🛏️ Rezervacija sobe</button>
-      <button class="quick-btn" data-msg="Kaj je v Hiši dobrega počutja?">🧖 Wellness</button>
-      <button class="quick-btn" data-msg="Kakšni so vikend paketi?">🎁 Paketi</button>
+    <div class="header-right">
+      <button class="new-btn" id="newBtn">Nova seja</button>
+      <div class="status-badge"><div class="status-dot"></div><span>Na voljo</span></div>
     </div>
-    <div class="input-area">
-      <textarea id="input" placeholder="Napišite sporočilo..." rows="1"></textarea>
-      <button id="sendBtn" aria-label="Pošlji">
-        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-      </button>
-    </div>
-    <div class="powered">built by: <a href="https://spoznaj-ai.si" target="_blank">spoznaj-ai.si</a></div>
   </div>
 
-  <script>
-    const STORAGE_KEY = 'urska_chat_history';
-    const MAX_MESSAGES = 50;
+  <div class="messages" id="messages"></div>
 
-    const messagesEl = document.getElementById('messages');
-    const inputEl = document.getElementById('input');
-    const sendBtn = document.getElementById('sendBtn');
-    const quickBtns = document.getElementById('quickBtns');
-    const clearBtn = document.getElementById('clearBtn');
-    const newSessionBtn = document.getElementById('newSessionBtn');
+  <div class="chips" id="chips">
+    <div class="chip" data-msg="Kaj ponujate na kmetiji?">🏡 Ponudba</div>
+    <div class="chip" data-msg="Kakšne so cene nastanitve?">💶 Cene</div>
+    <div class="chip" data-msg="Rad bi rezerviral sobo.">🛏️ Rezervacija</div>
+    <div class="chip" data-msg="Kaj je v Hiši dobrega počutja?">🧖 Wellness</div>
+    <div class="chip" data-msg="Kakšni so vikend paketi?">🎁 Paketi</div>
+    <div class="chip" data-msg="Kje se nahajate?">📍 Lokacija</div>
+  </div>
 
-    function loadHistory() {
-      try {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-          const messages = JSON.parse(saved);
-          if (messages.length > 0) {
-            messages.forEach(m => addMessageToDOM(m.text, m.who, false));
-            quickBtns.style.display = 'none';
-            return true;
-          }
-        }
-      } catch (e) {}
-      return false;
+  <div class="input-area">
+    <div class="input-row">
+      <textarea id="input" rows="1" placeholder="Napišite sporočilo..."></textarea>
+      <button class="send-btn" id="sendBtn">Pošlji →</button>
+    </div>
+    <div class="input-hint">Enter = pošlji &nbsp;•&nbsp; Shift+Enter = nova vrstica</div>
+  </div>
+
+  <div class="rezerv-bar">
+    <button class="rezerv-btn" id="rezervBtn">📅 Hitro rezerviraj sobo ali wellness</button>
+  </div>
+
+  <!-- BOOKING FORM OVERLAY -->
+  <div id="bf-overlay">
+    <div id="bf-header">
+      <button id="bf-back">← Nazaj</button>
+      <h2>📅 Nova rezervacija</h2>
+    </div>
+    <div id="bf-body">
+      <div class="bf-tabs">
+        <button class="bf-tab active" data-type="room" id="tabRoom">🛏️ Soba</button>
+        <button class="bf-tab" data-type="wellness" id="tabWellness">🧖 Wellness</button>
+      </div>
+
+      <div class="bf-prices" id="bfPrices"></div>
+
+      <div class="bf-field">
+        <label>Datum prihoda</label>
+        <input type="date" id="bfDate" />
+      </div>
+
+      <div id="bfNightsRow" class="bf-field">
+        <label>Število nočitev</label>
+        <div class="bf-stepper">
+          <button onclick="step('bfNights',-1,1,30)">−</button>
+          <span id="bfNights">2</span>
+          <button onclick="step('bfNights',1,1,30)">+</button>
+        </div>
+      </div>
+
+      <div class="bf-row">
+        <div class="bf-field">
+          <label>Odrasli</label>
+          <div class="bf-stepper">
+            <button onclick="step('bfAdults',-1,1,10)">−</button>
+            <span id="bfAdults">2</span>
+            <button onclick="step('bfAdults',1,1,10)">+</button>
+          </div>
+        </div>
+        <div class="bf-field">
+          <label>Otroci</label>
+          <div class="bf-stepper">
+            <button onclick="step('bfChildren',-1,0,8)">−</button>
+            <span id="bfChildren">0</span>
+            <button onclick="step('bfChildren',1,0,8)">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="bfChildAgesRow" style="display:none" class="bf-field">
+        <label>Starosti otrok (let, z vejico)</label>
+        <input type="text" id="bfChildAges" placeholder="npr. 5, 8" />
+      </div>
+
+      <div id="bfHalfBoardRow" style="display:flex;align-items:center;gap:8px;flex-direction:row" class="bf-field">
+        <input type="checkbox" id="bfHalfBoard" style="width:18px;height:18px;flex-shrink:0" />
+        <label for="bfHalfBoard" style="font-size:0.85rem;color:rgba(255,255,255,0.8)">Polpenzion — zajtrk + večerja (89 €/os/noč)</label>
+      </div>
+
+      <div class="bf-section">Kontakt</div>
+
+      <div class="bf-field">
+        <label>Ime in priimek *</label>
+        <input type="text" id="bfName" placeholder="npr. Ana Kovač" />
+      </div>
+      <div class="bf-field">
+        <label>Telefon *</label>
+        <input type="tel" id="bfPhone" placeholder="041 123 456" />
+      </div>
+      <div class="bf-field">
+        <label>E-pošta</label>
+        <input type="email" id="bfEmail" placeholder="ana@email.com (neobvezno)" />
+      </div>
+      <div class="bf-field">
+        <label>Opomba / posebne želje</label>
+        <textarea id="bfNote" placeholder="Posebne želje, alergije, hišni ljubljenčki..."></textarea>
+      </div>
+
+      <div class="bf-gdpr">
+        <input type="checkbox" id="bfGdpr" />
+        <label for="bfGdpr">Strinjam se z obdelavo osebnih podatkov za namen rezervacije.</label>
+      </div>
+    </div>
+    <div id="bf-footer">
+      <button id="bf-submit">Pošlji povpraševanje</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function setVh() {
+    const h = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+    document.documentElement.style.setProperty('--app-vh', h + 'px');
+  }
+  setVh();
+  window.addEventListener('resize', setVh);
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', setVh);
+
+  const SESSION_KEY = 'urska_session_id';
+  let sessionId = localStorage.getItem(SESSION_KEY);
+  if (!sessionId) {
+    sessionId = crypto.randomUUID ? crypto.randomUUID() : String(Date.now());
+    localStorage.setItem(SESSION_KEY, sessionId);
+  }
+
+  const messagesEl = document.getElementById('messages');
+  const chipsEl    = document.getElementById('chips');
+  const inputEl    = document.getElementById('input');
+  const sendBtn    = document.getElementById('sendBtn');
+  const newBtn     = document.getElementById('newBtn');
+
+  function fmt(text) {
+    return text
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g,'<em>$1</em>')
+      .replace(/\n/g,'<br>');
+  }
+
+  function addMsg(text, who) {
+    const div = document.createElement('div');
+    div.className = 'msg ' + who;
+    const av = document.createElement('div');
+    av.className = 'avatar';
+    av.textContent = who === 'bot' ? 'AI' : 'Vi';
+    const bub = document.createElement('div');
+    bub.className = 'bubble';
+    bub.innerHTML = fmt(text);
+    div.appendChild(av); div.appendChild(bub);
+    messagesEl.appendChild(div);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+    return bub;
+  }
+
+  function showTyping() {
+    const div = document.createElement('div');
+    div.id = 'typing'; div.className = 'msg bot';
+    const av = document.createElement('div');
+    av.className = 'avatar'; av.textContent = 'AI';
+    const bub = document.createElement('div');
+    bub.className = 'typing-bubble';
+    bub.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+    div.appendChild(av); div.appendChild(bub);
+    messagesEl.appendChild(div);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+  function hideTyping() { const el = document.getElementById('typing'); if(el) el.remove(); }
+
+  function showWelcome() {
+    messagesEl.innerHTML = '';
+    const div = document.createElement('div');
+    div.className = 'msg bot';
+    const av = document.createElement('div');
+    av.className = 'avatar'; av.textContent = 'AI';
+    const bub = document.createElement('div');
+    bub.className = 'bubble';
+    bub.innerHTML = `<div class="welcome">
+      <h3>Dobrodošli na Kmetiji Urška! 🌿</h3>
+      <p style="font-size:.85rem;color:rgba(255,255,255,.7);margin-bottom:8px;">Pomagam vam z:</p>
+      <ul>
+        <li>Nastanitvijo in cenami sob</li>
+        <li>Wellness — Hiša dobrega počutja</li>
+        <li>Vikend paketi in darilni boni</li>
+        <li>Ekološka kulinarika in vina</li>
+        <li>Aktivnosti in ogled kmetije</li>
+      </ul>
+    </div>`;
+    div.appendChild(av); div.appendChild(bub);
+    messagesEl.appendChild(div);
+    chipsEl.style.display = 'flex';
+  }
+
+  // BOOKING FORM
+  const bfOverlay = document.getElementById('bf-overlay');
+  const bfPrices  = document.getElementById('bfPrices');
+  let bfType = 'room';
+
+  function openBookingForm(hint) {
+    bfType = (hint === 'wellness') ? 'wellness' : 'room';
+    setTab(bfType);
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('bfDate').min = today;
+    if (!document.getElementById('bfDate').value) document.getElementById('bfDate').value = today;
+    bfOverlay.classList.add('open');
+  }
+
+  function closeBookingForm() { bfOverlay.classList.remove('open'); }
+
+  function setTab(type) {
+    bfType = type;
+    document.getElementById('tabRoom').classList.toggle('active', type === 'room');
+    document.getElementById('tabWellness').classList.toggle('active', type === 'wellness');
+    document.getElementById('bfNightsRow').style.display    = type === 'room' ? '' : 'none';
+    document.getElementById('bfHalfBoardRow').style.display = type === 'room' ? 'flex' : 'none';
+    updatePrices();
+  }
+
+  function updatePrices() {
+    if (bfType === 'room') {
+      bfPrices.innerHTML = '🛏️ <strong>74 €/os/noč</strong> z zajtrkom · min. 2 nočitvi<br>🍽️ Polpenzion (zajtrk + večerja): 89 €/os/noč<br>👶 Otroci do 3 let brezplačno · 🐾 Hišni ljubljenček: +10 €/dan';
+    } else {
+      bfPrices.innerHTML = '🧖 <strong>Wellness — Hiša dobrega počutja</strong><br>Parna in turška savna · Jacuzzi · Kopel v senu<br>Posamični vstop: 30 €/2 uri · Paketi od 199 €/os';
+    }
+  }
+
+  function step(id, delta, min, max) {
+    const el = document.getElementById(id);
+    let v = parseInt(el.textContent) + delta;
+    v = Math.max(min, Math.min(max, v));
+    el.textContent = v;
+    if (id === 'bfChildren') {
+      document.getElementById('bfChildAgesRow').style.display = v > 0 ? '' : 'none';
+    }
+  }
+
+  document.getElementById('tabRoom').addEventListener('click', () => setTab('room'));
+  document.getElementById('tabWellness').addEventListener('click', () => setTab('wellness'));
+  document.getElementById('rezervBtn').addEventListener('click', () => openBookingForm('room'));
+  document.getElementById('bf-back').addEventListener('click', closeBookingForm);
+
+  document.getElementById('bf-submit').addEventListener('click', async function() {
+    const name  = document.getElementById('bfName').value.trim();
+    const phone = document.getElementById('bfPhone').value.trim();
+    const date  = document.getElementById('bfDate').value;
+    const gdpr  = document.getElementById('bfGdpr').checked;
+
+    if (!name)  { alert('Vnesite ime in priimek.'); return; }
+    if (!phone) { alert('Vnesite telefonsko številko.'); return; }
+    if (!date)  { alert('Izberite datum.'); return; }
+    if (!gdpr)  { alert('Strinjati se morate z obdelavo podatkov.'); return; }
+
+    const adults   = parseInt(document.getElementById('bfAdults').textContent);
+    const children = parseInt(document.getElementById('bfChildren').textContent);
+    const agesRaw  = document.getElementById('bfChildAges').value;
+    const ages     = agesRaw ? agesRaw.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n)) : [];
+
+    const payload = {
+      session_id: sessionId, booking_type: bfType,
+      date, adults, children, children_ages: ages,
+      name, phone,
+      email: document.getElementById('bfEmail').value.trim(),
+      note: document.getElementById('bfNote').value.trim(),
+      gdpr: true,
+    };
+    if (bfType === 'room') {
+      payload.nights     = parseInt(document.getElementById('bfNights').textContent);
+      payload.half_board = document.getElementById('bfHalfBoard').checked;
     }
 
-    function saveHistory() {
-      try {
-        const messages = [];
-        document.querySelectorAll('.msg:not(.typing)').forEach(el => {
-          messages.push({ text: el.textContent, who: el.classList.contains('user') ? 'user' : 'bot' });
-        });
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(messages.slice(-MAX_MESSAGES)));
-      } catch (e) {}
-    }
+    const btn = document.getElementById('bf-submit');
+    btn.disabled = true; btn.textContent = 'Pošiljam...';
 
-    function clearHistory() {
-      localStorage.removeItem(STORAGE_KEY);
-      messagesEl.innerHTML = '';
-      addMessageToDOM('Pozdravljeni! 🌿 Sem vaš pomočnik Kmetije Urška. Kako vam lahko pomagam?', 'bot', false);
-      quickBtns.style.display = 'flex';
-    }
-
-    function addMessageToDOM(text, who, save = true) {
-      const div = document.createElement('div');
-      div.className = 'msg ' + who;
-      div.textContent = text;
-      messagesEl.appendChild(div);
-      if (who === 'user') {
-        div.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    try {
+      const res = await fetch('/chat/quick-booking', {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      closeBookingForm();
+      if (data.ok) {
+        addMsg('Povpraševanje sprejeto! Kmalu vas poklichemo za potrditev. Se vidimo na Kmetiji Urska! 🌿', 'bot');
+      } else {
+        addMsg('Napaka: ' + (data.error || 'Povpraševanje ni uspelo.'), 'bot');
       }
-      if (save) saveHistory();
-      return div;
+    } catch(e) {
+      closeBookingForm();
+      addMsg('Napaka pri pošiljanju.', 'bot');
     }
+    btn.disabled = false; btn.textContent = 'Pošlji povpraševanje';
+  });
 
-    function showTyping() {
-      const div = document.createElement('div');
-      div.className = 'msg bot typing';
-      div.id = 'typing';
-      div.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
-      messagesEl.appendChild(div);
-    }
-
-    function hideTyping() {
-      const el = document.getElementById('typing');
-      if (el) el.remove();
-    }
-
-    const sessionKey = 'urska_session_id';
-    let sessionId = localStorage.getItem(sessionKey);
-    if (!sessionId) {
-      sessionId = (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now());
-      localStorage.setItem(sessionKey, sessionId);
-    }
-
-    function resetSession() {
-      localStorage.removeItem(sessionKey);
-      sessionId = (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now());
-      localStorage.setItem(sessionKey, sessionId);
-    }
-
-    async function sendMessage(text) {
-      if (!text.trim()) return;
-      addMessageToDOM(text, 'user');
-      inputEl.value = '';
-      inputEl.style.height = 'auto';
-      sendBtn.disabled = true;
-      quickBtns.style.display = 'none';
-      showTyping();
-      try {
-        const res = await fetch('/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: text, session_id: sessionId })
-        });
-        hideTyping();
-        if (res.ok) {
-          const data = await res.json();
-          addMessageToDOM(data.reply || 'Oprostite, prišlo je do napake.', 'bot');
-        } else {
-          addMessageToDOM('Oprostite, strežnik ni dosegljiv.', 'bot');
-        }
-      } catch (err) {
-        hideTyping();
-        addMessageToDOM('Oprostite, prišlo je do napake pri povezavi.', 'bot');
+  async function send(text) {
+    text = text.trim();
+    if (!text || sendBtn.disabled) return;
+    chipsEl.style.display = 'none';
+    addMsg(text, 'user');
+    inputEl.value = ''; inputEl.style.height = 'auto';
+    sendBtn.disabled = true;
+    showTyping();
+    try {
+      const res = await fetch('/chat', {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({message: text, session_id: sessionId})
+      });
+      hideTyping();
+      if (res.ok) {
+        const data = await res.json();
+        addMsg(data.reply || 'Oprostite, brez odgovora.', 'bot');
+      } else {
+        addMsg('Streznik ni dosegljiv. Poskusite znova.', 'bot');
       }
-      sendBtn.disabled = false;
-      inputEl.focus();
+    } catch(e) {
+      hideTyping();
+      addMsg('Napaka pri povezavi.', 'bot');
     }
+    sendBtn.disabled = false;
+    inputEl.focus();
+  }
 
-    sendBtn.addEventListener('click', () => sendMessage(inputEl.value));
-    clearBtn.addEventListener('click', clearHistory);
-    newSessionBtn.addEventListener('click', () => { clearHistory(); resetSession(); });
+  sendBtn.addEventListener('click', () => send(inputEl.value));
+  inputEl.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(inputEl.value); }
+  });
+  inputEl.addEventListener('input', () => {
+    inputEl.style.height = 'auto';
+    inputEl.style.height = Math.min(inputEl.scrollHeight, 120) + 'px';
+  });
+  document.querySelectorAll('.chip').forEach(c => {
+    c.addEventListener('click', () => send(c.dataset.msg));
+  });
+  newBtn.addEventListener('click', () => {
+    localStorage.removeItem(SESSION_KEY);
+    sessionId = crypto.randomUUID ? crypto.randomUUID() : String(Date.now());
+    localStorage.setItem(SESSION_KEY, sessionId);
+    showWelcome();
+  });
 
-    inputEl.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(inputEl.value); }
-    });
-
-    inputEl.addEventListener('input', () => {
-      inputEl.style.height = 'auto';
-      inputEl.style.height = Math.min(inputEl.scrollHeight, 100) + 'px';
-    });
-
-    document.querySelectorAll('.quick-btn').forEach(btn => {
-      btn.addEventListener('click', () => { sendMessage(btn.dataset.msg); });
-    });
-
-    const hasHistory = loadHistory();
-    if (!hasHistory) {
-      addMessageToDOM('Pozdravljeni! 🌿 Sem vaš pomočnik Kmetije Urška. Kako vam lahko pomagam?', 'bot', false);
-    }
-  </script>
+  showWelcome();
+  updatePrices();
+</script>
 </body>
 </html>

@@ -17,6 +17,97 @@ _service = ReservationService()
 _sessions: dict[str, dict] = {}
 
 
+class QuickBookingRequest(BaseModel):
+    session_id: str | None = None
+    booking_type: str = "room"  # "room" or "wellness"
+    date: str
+    nights: int | None = None
+    adults: int = 2
+    children: int = 0
+    children_ages: list[int] = []
+    name: str
+    phone: str
+    email: str = ""
+    half_board: bool = False
+    note: str = ""
+    gdpr: bool = False
+
+
+@router.post("/quick-booking")
+async def quick_booking(payload: QuickBookingRequest):
+    """Sprejme celo rezervacijo naenkrat iz forme v widgetu."""
+    if not payload.gdpr:
+        return {"ok": False, "error": "Strinjanje z obdelavo podatkov je obvezno."}
+
+    from datetime import datetime as _dt2
+    conn = _service._conn()
+    cursor = conn.cursor()
+    now_ts = _dt2.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    half_board_note = " | Polpenzion: DA" if payload.half_board else ""
+    note_full = (payload.note + half_board_note).strip(" |")
+
+    cursor.execute("""
+        INSERT INTO reservations (date, nights, people, reservation_type, source, status, name, phone, email, note, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, (
+        payload.date,
+        payload.nights or 0,
+        payload.adults + payload.children,
+        payload.booking_type,
+        "widget_form",
+        "pending",
+        payload.name,
+        payload.phone,
+        payload.email,
+        note_full or "Rezervacija iz widget forme.",
+        now_ts,
+    ))
+    reservation_id = cursor.lastrowid
+    conn.commit()
+    conn.close()
+
+    session_id = payload.session_id or str(uuid.uuid4())
+    _service.log_conversation(
+        session_id=session_id,
+        user_message=f"[Forma] {payload.booking_type}: {payload.date}, {payload.adults}+{payload.children} oseb, {payload.name}",
+        bot_response=f"Rezervacija #{reservation_id} shranjena.",
+        intent="quick_booking_form",
+    )
+
+    # Email obvestilo
+    try:
+        from app.services.email_service import send_custom_message
+        import os as _os
+        notify_email = _os.getenv("NOTIFY_EMAIL", "")
+        if notify_email:
+            send_custom_message(
+                to=notify_email,
+                subject=f"[Kmetija Urška Widget] Nova rezervacija #{reservation_id} — {payload.name}",
+                body=f"""Nova rezervacija iz widget forme:
+
+Ime: {payload.name}
+Telefon: {payload.phone}
+Email: {payload.email or '-'}
+Datum: {payload.date}
+Tip: {payload.booking_type}
+Noči: {payload.nights or '-'}
+Odrasli: {payload.adults} | Otroci: {payload.children}
+Polpenzion: {'DA' if payload.half_board else 'NE'}
+Opomba: {payload.note or '-'}
+
+Rezervacija #{reservation_id}
+""",
+            )
+    except Exception as e:
+        print(f"[quick-booking] Email napaka: {e}")
+
+    if reservation_id:
+        return {"ok": True, "reservation_id": reservation_id}
+    else:
+        return {"ok": False, "error": "Napaka pri shranjevanju."}
+
+
 class ChatRequest(BaseModel):
     message: str
     session_id: str | None = None
