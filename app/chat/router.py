@@ -116,6 +116,8 @@ class ChatRequest(BaseModel):
 class ChatResponse(BaseModel):
     reply: str
     session_id: str
+    action: str | None = None
+    booking_type_hint: str | None = None
 
 
 def _get_session(session_id: str | None) -> tuple[str, dict]:
@@ -128,10 +130,42 @@ def _get_session(session_id: str | None) -> tuple[str, dict]:
     return new_id, _sessions[new_id]
 
 
+def _detect_booking_intent(message: str) -> str | None:
+    """Detect if user wants to make a booking. Returns 'room', 'wellness' or None."""
+    msg = message.lower()
+    room_keywords = ("rezervir", "soba", "prenočit", "prenočev", "nastanit", "noč", "noči", "apartma")
+    wellness_keywords = ("wellness", "savna", "jacuzzi", "kopel v senu", "hiša dobrega počutja", "razvajanje", "spa")
+    if any(k in msg for k in room_keywords):
+        return "room"
+    if any(k in msg for k in wellness_keywords):
+        return "wellness"
+    return None
+
+
 @router.post("", response_model=ChatResponse)
 async def chat_endpoint(payload: ChatRequest) -> ChatResponse:
     session_id, session = _get_session(payload.session_id)
     message = payload.message.strip()
+
+    # Detect booking intent → offer the quick form
+    booking_type = _detect_booking_intent(message)
+    if booking_type and not session.get("form_offered"):
+        session["form_offered"] = True
+        result = chat(message=message, history=session["history"])
+        session["history"].append({"role": "user", "content": message})
+        session["history"].append({"role": "assistant", "content": result["reply"]})
+        _service.log_conversation(
+            session_id=session_id,
+            user_message=message,
+            bot_response=result["reply"],
+            intent=f"booking_intent_{booking_type}",
+        )
+        return ChatResponse(
+            reply=result["reply"],
+            session_id=session_id,
+            action="open_booking_form",
+            booking_type_hint=booking_type,
+        )
 
     result = chat(message=message, history=session["history"])
 
