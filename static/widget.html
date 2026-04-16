@@ -472,7 +472,7 @@
         addMsg(data.reply || 'Oprostite, brez odgovora.', 'bot');
         // If booking intent detected → show offer banner after 600ms
         if (data.action === 'open_booking_form') {
-          setTimeout(() => showBookingOffer(data.booking_type_hint), 600);
+          setTimeout(() => openBookingForm(data.booking_type_hint), 400);
         }
       } else {
         addMsg('Streznik ni dosegljiv. Poskusite znova.', 'bot');
