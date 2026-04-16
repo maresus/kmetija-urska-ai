@@ -133,8 +133,9 @@ def _get_session(session_id: str | None) -> tuple[str, dict]:
 def _detect_booking_intent(message: str) -> str | None:
     """Detect if user wants to make a booking. Returns 'room', 'wellness' or None."""
     msg = message.lower()
-    room_keywords = ("rezervir", "soba", "prenočit", "prenočev", "nastanit", "noč", "noči", "apartma")
-    wellness_keywords = ("wellness", "savna", "jacuzzi", "kopel v senu", "hiša dobrega počutja", "razvajanje", "spa")
+    # Koreni brez končnic — pokrijejo vse sklanjatve (soba/sobo/sobe, savna/savno/savne...)
+    room_keywords = ("rezervir", "sob", "prenočit", "prenočev", "nastanit", "noč", "apartma")
+    wellness_keywords = ("wellness", "savn", "jacuzzi", "kopel v senu", "hiša dobrega počutja", "razvajanj", "spa")
     if any(k in msg for k in room_keywords):
         return "room"
     if any(k in msg for k in wellness_keywords):

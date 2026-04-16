@@ -47,8 +47,8 @@ def load_knowledge(path: str | Path) -> int:
             try:
                 obj = json.loads(line)
                 _CHUNKS.append(Chunk(
-                    title=obj.get('title', ''),
-                    paragraph=obj.get('content', '') or obj.get('paragraph', ''),
+                    title=obj.get('title', obj.get('id', '')),
+                    paragraph=obj.get('text', '') or obj.get('content', '') or obj.get('paragraph', ''),
                     url=obj.get('url'),
                 ))
             except json.JSONDecodeError:
