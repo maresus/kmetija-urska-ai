@@ -4,7 +4,8 @@ Chat API router for Kmetija Urška AI.
 from __future__ import annotations
 
 import uuid
-from fastapi import APIRouter
+import asyncio
+from fastapi import APIRouter, BackgroundTasks
 from pydantic import BaseModel
 
 from app.chat.llm_chat import chat
@@ -144,7 +145,7 @@ def _detect_booking_intent(message: str) -> str | None:
 
 
 @router.post("", response_model=ChatResponse)
-async def chat_endpoint(payload: ChatRequest) -> ChatResponse:
+async def chat_endpoint(payload: ChatRequest, background_tasks: BackgroundTasks) -> ChatResponse:
     session_id, session = _get_session(payload.session_id)
     message = payload.message.strip()
 
@@ -176,8 +177,8 @@ async def chat_endpoint(payload: ChatRequest) -> ChatResponse:
     if len(session["history"]) > 20:
         session["history"] = session["history"][-20:]
 
-    # Auto-extract booking from conversation if enough data
-    _try_auto_save_inquiry(session_id, session)
+    # Auto-extract booking v ozadju — ne blokira odgovora
+    background_tasks.add_task(_try_auto_save_inquiry, session_id, session)
 
     _service.log_conversation(
         session_id=session_id,
