@@ -44,13 +44,15 @@ async def quick_booking(payload: QuickBookingRequest):
     conn = _service._conn()
     cursor = conn.cursor()
     now_ts = _dt2.now().strftime("%Y-%m-%d %H:%M:%S")
+    ph = _service._placeholder()
 
     half_board_note = " | Polpenzion: DA" if payload.half_board else ""
     note_full = (payload.note + half_board_note).strip(" |")
 
-    cursor.execute("""
+    returning = " RETURNING id" if _service.use_postgres else ""
+    cursor.execute(f"""
         INSERT INTO reservations (date, nights, people, reservation_type, source, status, name, phone, email, note, created_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES ({ph}, {ph}, {ph}, {ph}, {ph}, {ph}, {ph}, {ph}, {ph}, {ph}, {ph}){returning}
     """, (
         payload.date,
         payload.nights or 0,
@@ -64,7 +66,11 @@ async def quick_booking(payload: QuickBookingRequest):
         note_full or "Rezervacija iz widget forme.",
         now_ts,
     ))
-    reservation_id = cursor.lastrowid
+    if _service.use_postgres:
+        row = cursor.fetchone()
+        reservation_id = row["id"] if isinstance(row, dict) else row[0]
+    else:
+        reservation_id = cursor.lastrowid
     conn.commit()
     conn.close()
 
