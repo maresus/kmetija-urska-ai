@@ -218,23 +218,27 @@ def _try_auto_save_inquiry(session_id: str, session: dict) -> int | None:
     current_year = _dt.now().year
     extraction_prompt = f"""Iz spodnjega pogovora izvleci podatke o rezervaciji/povpraševanju za turistično kmetijo.
 Vrni SAMO JSON brez razlage. Če podatek manjka, daj null.
-Zahtevani podatki: ime (vsaj priimek), kontakt (telefon ali email), datum, število oseb.
-Če kateri koli od teh 4 podatkov manjka → vrni: {{"complete": false}}
+Zahtevani podatki: ime (vsaj priimek), EMAIL (obvezen za potrditev), telefon, datum, število oseb.
+Če katerikoli od teh manjka (ime, email, datum, osebe) → vrni: {{"complete": false}}
+POSEBEJ: brez emaila = {{"complete": false}}, tudi če je telefon podan!
 
 POMEMBNO:
 - Tekoče leto je {current_year}. Če leto ni eksplicitno navedeno, uporabi {current_year}.
 - "število oseb" = skupaj oseb (odrasli + otroci).
 - date format: DD.MM.YYYY
+- otroci: izvleci iz pogovora ali nastavi null
 
 Format če je kompletno:
 {{
   "complete": true,
-  "booking_type": "room" ali "wellness",
+  "booking_type": "room" ali "wellness" ali "table",
   "name": "...",
   "phone": "..." ali null,
-  "email": "..." ali null,
+  "email": "...",
   "date": "DD.MM.YYYY",
   "people": 2,
+  "kids": 0,
+  "kids_ages": "..." ali null,
   "note": "..." ali null
 }}"""
 
